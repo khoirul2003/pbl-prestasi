@@ -12,6 +12,7 @@ class DetailStudent extends Model
     protected $table = 'detail_students';
 
     protected $fillable = [
+        'academic_year_id',
         'study_program_id',
         'detail_student_nim',
         'detail_student_gender',
@@ -27,5 +28,10 @@ class DetailStudent extends Model
     public function studyProgram()
     {
         return $this->belongsTo(StudyProgram::class, 'study_program_id', 'study_program_id');
+    }
+
+    public function academicYear()
+    {
+        return $this->belongsTo(AcademicYear::class, 'academic_year_id', 'academic_year_id');
     }
 }
