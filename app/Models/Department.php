@@ -5,15 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Major extends Model
+class Department extends Model
 {
     use HasFactory;
 
-    protected $table = 'majors';
+    protected $table = 'departments';
 
     protected $fillable = [
-        'major_name',
+        'department_name',
     ];
 
-    protected $primaryKey = 'major_id';
+    protected $primaryKey = 'department_id';
 }

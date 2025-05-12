@@ -12,7 +12,7 @@ class StudyProgram extends Model
     protected $table = 'study_programs';
 
     protected $fillable = [
-        'major_id',
+        'department_id',
         'study_program_name',
     ];
 
@@ -20,6 +20,6 @@ class StudyProgram extends Model
 
     public function major()
     {
-        return $this->belongsTo(Major::class, 'major_id', 'major_id');
+        return $this->belongsTo(Department::class, 'department_id', 'department_id');
     }
 }
