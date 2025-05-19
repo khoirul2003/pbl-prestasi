@@ -16,44 +16,32 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        $admin = User::create([
-            'name' => 'Admin User',
-            'email' => 'admin@domain.com',
-            'password' => Hash::make('password123'),
-            'role' => 'admin',
+        // Admin
+        User::create([
+            'role_id' => 1,
+            'user_name' => 'Admin User',
+            'user_username' => 'admin01',
+            'user_password' => Hash::make('password123'), // hash password
         ]);
 
-        // Seeder untuk Mahasiswa
-        $mahasiswa = User::create([
-            'name' => 'Mahasiswa User',
-            'email' => 'mahasiswa@domain.com',
-            'password' => Hash::make('password123'),
-            'role' => 'mahasiswa',
-        ]);
+        // Supervisor
+        for ($i = 1; $i <= 10; $i++) {
+            User::create([
+                'role_id' => 2,
+                'user_name' => "Supervisor $i",
+                'user_username' => "supervisor$i",
+                'user_password' => Hash::make('password123'),
+            ]);
+        }
 
-        // Menambahkan detail mahasiswa
-        MahasiswaDetail::create([
-            'user_id' => $mahasiswa->id,
-            'nim' => '1234567890',
-            'program_studi' => 'Teknik Informatika',
-            'tanggal_lahir' => '2000-01-01',
-            'alamat' => 'Jl. Contoh Mahasiswa No. 123',
-        ]);
-
-        // Seeder untuk Dosen
-        $dosen = User::create([
-            'name' => 'Dosen User',
-            'email' => 'dosen@domain.com',
-            'password' => Hash::make('password123'),
-            'role' => 'dosen',
-        ]);
-
-        // Menambahkan detail dosen
-        DosenDetail::create([
-            'user_id' => $dosen->id,
-            'nip' => '9876543210',
-            'program_studi' => 'Teknik Informatika',
-            'jabatan' => 'Dosen Senior',
-        ]);
+        // Student
+        for ($i = 1; $i <= 10; $i++) {
+            User::create([
+                'role_id' => 3,
+                'user_name' => "Student $i",
+                'user_username' => "student$i",
+                'user_password' => Hash::make('password123'),
+            ]);
+        }
     }
 }
