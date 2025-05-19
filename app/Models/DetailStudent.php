@@ -12,6 +12,7 @@ class DetailStudent extends Model
     protected $table = 'detail_students';
 
     protected $fillable = [
+        'user_id',
         'academic_year_id',
         'study_program_id',
         'detail_student_nim',
@@ -33,5 +34,10 @@ class DetailStudent extends Model
     public function academicYear()
     {
         return $this->belongsTo(AcademicYear::class, 'academic_year_id', 'academic_year_id');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'user_id');
     }
 }

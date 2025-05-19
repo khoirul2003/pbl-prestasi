@@ -7,7 +7,7 @@ use App\Http\Controllers\StudentController;
 use App\Http\Controllers\SupervisorController;
 use Illuminate\Support\Facades\Route;
 
-Route::view('/', 'home');
+Route::view('/', 'home')->name('home');
 
 Route::prefix('admin')->group(function () {
     Route::get('/', [AdminController::class, 'index'])->name('admin.dashboard');

@@ -12,7 +12,8 @@ class DetailSupervisor extends Model
     protected $table = 'detail_supervisors';
 
     protected $fillable = [
-        'major_id',
+        'user_id',
+        'department_id',
         'detail_supervisor_nip',
         'detail_supervisor_gender',
         'detail_supervisor_dob',
@@ -24,8 +25,13 @@ class DetailSupervisor extends Model
 
     protected $primaryKey = 'detail_supervisor_id';
 
-    public function major()
+    public function department()
     {
-        return $this->belongsTo(Major::class, 'major_id', 'major_id');
+        return $this->belongsTo(Department::class, 'department_id', 'department_id');
+    }
+
+    public function detailSupervisor()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'user_id');
     }
 }

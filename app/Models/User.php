@@ -11,8 +11,7 @@ class User extends Model
 
     protected $fillable = [
         'role_id',
-        'detail_student_id',
-        'detail_supervisor_id',
+        
         'user_name',
         'user_username',
         'user_password',
@@ -27,13 +26,5 @@ class User extends Model
         return $this->belongsTo(Role::class, 'role_id', 'role_id');
     }
 
-    public function detailStudent()
-    {
-        return $this->belongsTo(DetailStudent::class, 'detail_student_id', 'detail_student_id');
-    }
 
-    public function detailSupervisor()
-    {
-        return $this->belongsTo(DetailSupervisor::class, 'detail_supervisor_id', 'detail_supervisor_id');
-    }
 }

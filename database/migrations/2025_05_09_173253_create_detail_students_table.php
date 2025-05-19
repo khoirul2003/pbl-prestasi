@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('detail_students', function (Blueprint $table) {
             $table->id('detail_student_id');
+            $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('study_program_id');
             $table->string('detail_student_nim', 255)->unique();
             $table->enum('detail_student_gender', ['female', 'male']);
@@ -23,7 +24,9 @@ return new class extends Migration
             $table->string('detail_student_photo', 255);
             $table->timestamps();
 
+            $table->foreign('user_id')->references('user_id')->on('users')->onDelete('cascade');
             $table->foreign('study_program_id')->references('study_program_id')->on('study_programs')->onDelete('cascade');
+
         });
     }
 

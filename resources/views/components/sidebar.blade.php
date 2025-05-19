@@ -1,12 +1,38 @@
-<aside class="sidebar">
+<nav class="sidebar sidebar-offcanvas" id="sidebar">
+    <ul class="nav">
+        <li class="nav-item">
+            <a class="nav-link" href="{{ route('home') }}">
+                <i class="mdi mdi-grid-large menu-icon"></i>
+                <span class="menu-title">Dashboard</span>
+            </a>
+        </li>
+        <li class="nav-item nav-category">UI Elements</li>
 
-    <ul>
-        <li><p>Sidebar</p></li>
-        <li><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-        <li><a href="{{ route('departments.index') }}">Departments</a></li>
-        <li><a href="">Program Study</a></li>
-        <li><a href="{{ route('categories.index') }}">Category</a></li>
-        <li><a href="">Academic Year</a></li>
-        <li><a href="">Period</a></li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ route('departments.index') }}" aria-expanded="false"
+                aria-controls="form-elements">
+                <i class="menu-icon mdi mdi-card-text-outline"></i>
+                <span class="menu-title">Departments</span>
+
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" href="" aria-expanded="false" aria-controls="form-elements">
+                <i class="menu-icon mdi mdi-card-text-outline"></i>
+                <span class="menu-title">Study Programs</span>
+
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" href="{{ route('categories.index') }}" aria-expanded="false"
+                aria-controls="form-elements">
+                <i class="menu-icon mdi mdi-card-text-outline"></i>
+                <span class="menu-title">Categories</span>
+
+            </a>
+        </li>
+
     </ul>
-</aside>
+</nav>
