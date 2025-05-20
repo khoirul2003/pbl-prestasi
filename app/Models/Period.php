@@ -20,7 +20,7 @@ class Period extends Model
 
     protected $primaryKey = 'period_id';
 
-    public function academicYear()
+    public function academic_year()
     {
         return $this->belongsTo(AcademicYear::class, 'academic_year_id', 'academic_year_id');
     }

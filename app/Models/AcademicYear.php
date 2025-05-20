@@ -19,9 +19,4 @@ class AcademicYear extends Model
 
     protected $primaryKey = 'academic_year_id';
 
-
-    public function periods()
-    {
-        return $this->hasMany(Period::class, 'academic_year_id', 'academic_year_id');
-    }
 }

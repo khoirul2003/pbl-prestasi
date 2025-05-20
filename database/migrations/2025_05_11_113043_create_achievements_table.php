@@ -19,7 +19,7 @@ return new class extends Migration
             $table->text('achievement_description');
             $table->integer('achievement_ranking');
             $table->enum('achievement_level', ['regional', 'nasional', 'internasional']);
-            $table->string('achievement_document', 255);
+            $table->string('achievement_document', 255)->nullable();
             $table->enum('achievement_verified', ['approved', 'rejected', 'pending']);
             $table->timestamps();
 
