@@ -18,9 +18,49 @@
         </li>
 
         <li class="nav-item">
-            <a class="nav-link" href="" aria-expanded="false" aria-controls="form-elements">
+            <a class="nav-link" href="{{ route('study_programs.index') }}" aria-expanded="false" aria-controls="form-elements">
                 <i class="menu-icon mdi mdi-card-text-outline"></i>
                 <span class="menu-title">Study Programs</span>
+
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" href="{{ route('academic_years.index') }}" aria-expanded="false" aria-controls="form-elements">
+                <i class="menu-icon mdi mdi-card-text-outline"></i>
+                <span class="menu-title">Academic Years</span>
+
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" href="{{ route('periods.index') }}" aria-expanded="false" aria-controls="form-elements">
+                <i class="menu-icon mdi mdi-card-text-outline"></i>
+                <span class="menu-title">Periods</span>
+
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" href="{{ route('student_periods.index') }}" aria-expanded="false" aria-controls="form-elements">
+                <i class="menu-icon mdi mdi-card-text-outline"></i>
+                <span class="menu-title">Student Periods</span>
+
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" href="" aria-expanded="false" aria-controls="form-elements">
+                <i class="menu-icon mdi mdi-card-text-outline"></i>
+                <span class="menu-title">Competitions</span>
+
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" href="" aria-expanded="false" aria-controls="form-elements">
+                <i class="menu-icon mdi mdi-card-text-outline"></i>
+                <span class="menu-title">Achievements</span>
 
             </a>
         </li>
