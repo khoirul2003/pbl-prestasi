@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('detail_student_address', 255);
             $table->string('detail_student_phone_no', 255);
             $table->string('detail_student_email', 255);
-            $table->string('detail_student_photo', 255);
+            $table->string('detail_student_photo', 255)->nullable();
             $table->timestamps();
 
             $table->foreign('user_id')->references('user_id')->on('users')->onDelete('cascade');

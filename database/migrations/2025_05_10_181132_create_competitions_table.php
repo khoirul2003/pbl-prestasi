@@ -20,7 +20,7 @@ return new class extends Migration
             $table->enum('competition_level', ['regional', 'nasional', 'internasional']);
             $table->date('competition_registration_deadline');
             $table->string('competition_registion_link', 255);
-            $table->string('competition_document', 255);
+            $table->string('competition_document', 255)->nullable();
             $table->timestamps();
 
             $table->foreign('category_id')->references('category_id')->on('categories')->onDelete('cascade');
