@@ -1,17 +1,78 @@
-<div class="col-md-2">
-    <div class="list-group">
-        @auth
-            <a href="{{ route('dashboard') }}" class="list-group-item list-group-item-action bg-primary text-white">Dashboard</a>
-            @if(auth()->user()->role == 'mahasiswa')
-                <a href="{{ route('dashboard.mahasiswa') }}" class="list-group-item list-group-item-action">Dashboard Mahasiswa</a>
-            @elseif(auth()->user()->role == 'dosen')
-                <a href="{{ route('dashboard.dosen') }}" class="list-group-item list-group-item-action">Dashboard Dosen</a>
-            @elseif(auth()->user()->role == 'admin')
-                <a href="{{ route('dashboard.admin') }}" class="list-group-item list-group-item-action">Dashboard Admin</a>
-                <a href="{{ route('admin.users') }}" class="list-group-item list-group-item-action">Data User</a>
-                <a href="{{ route('admin.competitions') }}" class="list-group-item list-group-item-action">Data Lomba</a>
-                <a href="{{ route('admin.reports') }}" class="list-group-item list-group-item-action">Data Laporan</a>
-            @endif
-        @endauth
-    </div>
-</div>
+<nav class="sidebar sidebar-offcanvas" id="sidebar">
+    <ul class="nav">
+        <li class="nav-item">
+            <a class="nav-link" href="{{ route('home') }}">
+                <i class="mdi mdi-grid-large menu-icon"></i>
+                <span class="menu-title">Dashboard</span>
+            </a>
+        </li>
+        <li class="nav-item nav-category">UI Elements</li>
+
+        <li class="nav-item">
+            <a class="nav-link" href="{{ route('departments.index') }}" aria-expanded="false"
+                aria-controls="form-elements">
+                <i class="menu-icon mdi mdi-card-text-outline"></i>
+                <span class="menu-title">Departments</span>
+
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" href="{{ route('study_programs.index') }}" aria-expanded="false" aria-controls="form-elements">
+                <i class="menu-icon mdi mdi-card-text-outline"></i>
+                <span class="menu-title">Study Programs</span>
+
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" href="{{ route('academic_years.index') }}" aria-expanded="false" aria-controls="form-elements">
+                <i class="menu-icon mdi mdi-card-text-outline"></i>
+                <span class="menu-title">Academic Years</span>
+
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" href="{{ route('periods.index') }}" aria-expanded="false" aria-controls="form-elements">
+                <i class="menu-icon mdi mdi-card-text-outline"></i>
+                <span class="menu-title">Periods</span>
+
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" href="{{ route('student_periods.index') }}" aria-expanded="false" aria-controls="form-elements">
+                <i class="menu-icon mdi mdi-card-text-outline"></i>
+                <span class="menu-title">Student Periods</span>
+
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" href="" aria-expanded="false" aria-controls="form-elements">
+                <i class="menu-icon mdi mdi-card-text-outline"></i>
+                <span class="menu-title">Competitions</span>
+
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" href="" aria-expanded="false" aria-controls="form-elements">
+                <i class="menu-icon mdi mdi-card-text-outline"></i>
+                <span class="menu-title">Achievements</span>
+
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" href="{{ route('categories.index') }}" aria-expanded="false"
+                aria-controls="form-elements">
+                <i class="menu-icon mdi mdi-card-text-outline"></i>
+                <span class="menu-title">Categories</span>
+
+            </a>
+        </li>
+
+    </ul>
+</nav>

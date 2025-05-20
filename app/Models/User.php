@@ -3,36 +3,28 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 
-class User extends Authenticatable
+class User extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'email', 'password', 'role'];
+    protected $fillable = [
+        'role_id',
+        
+        'user_name',
+        'user_username',
+        'user_password',
+    ];
 
-    /**
-     * Relasi dengan tabel mahasiswa_detail
-     */
-    public function mahasiswaDetail()
+    protected $primaryKey = 'user_id';
+
+    public $timestamps = true;
+
+    public function role()
     {
-        return $this->hasOne(MahasiswaDetail::class);
+        return $this->belongsTo(Role::class, 'role_id', 'role_id');
     }
 
-    /**
-     * Relasi dengan tabel dosen_detail
-     */
-    public function dosenDetail()
-    {
-        return $this->hasOne(DosenDetail::class);
-    }
 
-    /**
-     * Relasi dengan tabel prestasi_mahasiswa (jika mahasiswa)
-     */
-    public function prestasiMahasiswa()
-    {
-        return $this->hasMany(PrestasiMahasiswa::class);
-    }
 }

@@ -1,64 +1,34 @@
 <?php
 
+use App\Http\Controllers\AcademicYearController;
 use App\Http\Controllers\AdminController;
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\DepartmentController;
+use App\Http\Controllers\PeriodController;
+use App\Http\Controllers\StudentController;
+use App\Http\Controllers\StudentPeriodController;
+use App\Http\Controllers\StudyProgramController;
+use App\Http\Controllers\SupervisorController;
+use App\Models\Period;
+use App\Models\StudentPeriod;
 use Illuminate\Support\Facades\Route;
 
-Route::get('login', [AuthController::class, 'showLoginForm'])->name('login');
+Route::view('/', 'home')->name('home');
 
-// Proses login
-Route::post('login', [AuthController::class, 'login']);
-
-// Menampilkan form register
-Route::get('register', [AuthController::class, 'showRegisterForm'])->name('register');
-
-// Proses register
-Route::post('register', [AuthController::class, 'register']);
-
-// Rute untuk dashboard berdasarkan role
-Route::get('dashboard', [DashboardController::class, 'index'])->middleware('auth')->name('dashboard');
-
-// Dashboard khusus untuk mahasiswa
-Route::middleware('auth', 'role:mahasiswa')->group(function () {
-    Route::get('dashboard/mahasiswa', [DashboardController::class, 'mahasiswaDashboard'])->name('dashboard.mahasiswa');
+Route::prefix('admin')->group(function () {
+    Route::get('/', [AdminController::class, 'index'])->name('admin.dashboard');
+    Route::resource('departments', DepartmentController::class);
+    Route::resource('study_programs', StudyProgramController::class);
+    Route::resource('academic_years', AcademicYearController::class);
+    Route::resource('categories', CategoryController::class);
+    Route::resource('periods', PeriodController::class);
+    Route::resource('student_periods', StudentPeriodController::class);
 });
 
-// Dashboard khusus untuk dosen
-Route::middleware('auth', 'role:dosen')->group(function () {
-    Route::get('dashboard/dosen', [DashboardController::class, 'dosenDashboard'])->name('dashboard.dosen');
+Route::prefix('student')->group(function () {
+    Route::get('/', [StudentController::class, 'index'])->name('student.dashboard');
 });
 
-// Dashboard khusus untuk admin
-Route::middleware('auth', 'role:admin')->group(function () {
-    Route::get('dashboard/admin', [DashboardController::class, 'adminDashboard'])->name('dashboard.admin');
-});
-
-// Logout
-Route::post('logout', [AuthController::class, 'logout'])->name('logout');
-
-
-Route::middleware('auth', 'role:admin')->group(function () {
-    Route::get('admin/users', [AdminController::class, 'index'])->name('admin.users');  // Daftar pengguna
-    Route::get('admin/users/{user}', [AdminController::class, 'show'])->name('admin.users.show');  // Daftar pengguna
-    Route::get('admin/users/create', [AdminController::class, 'create'])->name('admin.users.create');  // Form tambah pengguna
-    Route::post('admin/users', [AdminController::class, 'store'])->name('admin.users.store');  // Proses tambah pengguna
-    Route::get('admin/users/{user}/edit', [AdminController::class, 'edit'])->name('admin.users.edit');  // Form edit pengguna
-    Route::put('admin/users/{user}', [AdminController::class, 'update'])->name('admin.users.update');  // Proses edit pengguna
-    Route::delete('admin/users/{user}', [AdminController::class, 'destroy'])->name('admin.users.destroy');  // Hapus pengguna
-});
-
-// Fitur admin - Manajemen Lomba
-Route::middleware('auth', 'role:admin')->group(function () {
-    Route::get('admin/competitions', [AdminController::class, 'competitions'])->name('admin.competitions');  // Daftar lomba
-    Route::get('admin/competitions/create', [AdminController::class, 'createCompetition'])->name('admin.competitions.create');  // Form tambah lomba
-    Route::post('admin/competitions', [AdminController::class, 'storeCompetition'])->name('admin.competitions.store');  // Proses tambah lomba
-    Route::get('admin/competitions/{competition}/edit', [AdminController::class, 'editCompetition'])->name('admin.competitions.edit');  // Form edit lomba
-    Route::put('admin/competitions/{competition}', [AdminController::class, 'updateCompetition'])->name('admin.competitions.update');  // Proses edit lomba
-    Route::delete('admin/competitions/{competition}', [AdminController::class, 'destroyCompetition'])->name('admin.competitions.destroy');  // Hapus lomba
-});
-
-// Fitur admin - Laporan Prestasi Mahasiswa
-Route::middleware('auth', 'role:admin')->group(function () {
-    Route::get('admin/reports', [AdminController::class, 'reports'])->name('admin.reports');  // Laporan prestasi
+Route::prefix('supervisor')->group(function () {
+    Route::get('/', [SupervisorController::class, 'index'])->name('supervisor.dashboard');
 });
