@@ -18,7 +18,7 @@ class StudyProgram extends Model
 
     protected $primaryKey = 'study_program_id';
 
-    public function major()
+    public function departments()
     {
         return $this->belongsTo(Department::class, 'department_id', 'department_id');
     }
