@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id('student_period_id');
             $table->unsignedBigInteger('period_id');
             $table->unsignedBigInteger('detail_student_id');
-            $table->integer('ipk');
+            $table->decimal('ipk');
             $table->timestamps();
 
             $table->foreign('period_id')->references('period_id')->on('periods')->onDelete('cascade');
