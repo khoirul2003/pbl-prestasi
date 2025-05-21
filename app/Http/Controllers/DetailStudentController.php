@@ -17,7 +17,7 @@ class DetailStudentController extends Controller
             ->where('role_id', 3)
             ->paginate(10);
 
-        return view('users.student.index', compact('students'));
+        return view('admin.users.student.index', compact('students'));
     }
 
     // Form tambah student baru

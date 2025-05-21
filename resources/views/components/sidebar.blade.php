@@ -1,5 +1,5 @@
-<nav class="sidebar sidebar-offcanvas" id="sidebar">
-    <ul class="nav">
+<nav class="sidebar sidebar-offcanvas" id="sidebar" >
+    <ul class="nav" >
         <li class="nav-item">
             <a class="nav-link" href="{{ route('home') }}">
                 <i class="mdi bi bi-speedometer2 menu-icon"></i>
@@ -10,14 +10,14 @@
 
         <li class="nav-item">
             <a class="nav-link" data-bs-toggle="collapse" href="#charts" aria-expanded="false" aria-controls="charts">
-                <i class="menu-icon mdi mdi-chart-line"></i>
+                <i class="menu-icon bi bi-person"></i>
                 <span class="menu-title">Users</span>
                 <i class="menu-arrow"></i>
             </a>
             <div class="collapse" id="charts">
                 <ul class="nav flex-column sub-menu">
-                    <li class="nav-item"> <a class="nav-link" href="">Supervisor</a></li>
-                    <li class="nav-item"> <a class="nav-link" href="">Student</a></li>
+                    <li class="nav-item"> <a class="nav-link" href="{{ route('supervisors.index') }}">Supervisor</a></li>
+                    <li class="nav-item"> <a class="nav-link" href="{{ route('students.index') }}">Student</a></li>
                 </ul>
             </div>
         </li>
@@ -43,7 +43,7 @@
         <li class="nav-item">
             <a class="nav-link" href="{{ route('academic_years.index') }}" aria-expanded="false"
                 aria-controls="form-elements">
-                <i class="menu-icon mdi bi bi-calendar"></i>
+                <i class="menu-icon mdi bi-calendar3"></i>
                 <span class="menu-title">Academic Years</span>
 
             </a>
@@ -59,7 +59,7 @@
 
         <li class="nav-item">
             <a class="nav-link" href="" aria-expanded="false" aria-controls="form-elements">
-                <i class="menu-icon mdi bi bi-person-fill"></i>
+                <i class="menu-icon mdi bi bi-calendar-range"></i>
                 <span class="menu-title">Student Periods</span>
 
             </a>

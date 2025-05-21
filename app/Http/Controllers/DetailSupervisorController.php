@@ -17,7 +17,7 @@ class DetailSupervisorController extends Controller
             ->where('role_id', 2)
             ->paginate(10);
 
-        return view('users.supervisor.index', compact('supervisors'));
+        return view('admin.users.supervisor.index', compact('supervisors'));
     }
 
     public function create()

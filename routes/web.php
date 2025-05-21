@@ -4,6 +4,8 @@ use App\Http\Controllers\AcademicYearController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DepartmentController;
+use App\Http\Controllers\DetailStudentController;
+use App\Http\Controllers\DetailSupervisorController;
 use App\Http\Controllers\PeriodController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\StudentPeriodController;
@@ -23,6 +25,9 @@ Route::prefix('admin')->group(function () {
     Route::resource('categories', CategoryController::class);
     Route::resource('periods', PeriodController::class);
     Route::resource('student_periods', StudentPeriodController::class);
+    Route::resource('student_periods', StudentPeriodController::class);
+    Route::resource('supervisors', DetailSupervisorController::class);
+    Route::resource('students', DetailStudentController::class);
 });
 
 Route::prefix('student')->group(function () {
