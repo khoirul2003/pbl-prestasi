@@ -22,6 +22,7 @@
         <link rel="stylesheet" type="text/css" href="{{ asset('template/dist/assets/js/select.dataTables.min.css') }}">
         <link rel="stylesheet" href="{{ asset('template/dist/assets/css/style.css') }}">
         <link rel="shortcut icon" href="{{ asset('template/dist/assets/images/favicon.png') }}" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     </head>
 
     <body>
@@ -55,5 +56,5 @@
         <script src="{{ asset('template/dist/assets/js/dashboard.js') }}"></script>
 
     </body>
-</html>
 
+</html>

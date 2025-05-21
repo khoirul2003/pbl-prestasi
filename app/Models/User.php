@@ -11,7 +11,6 @@ class User extends Model
 
     protected $fillable = [
         'role_id',
-        
         'user_name',
         'user_username',
         'user_password',
@@ -25,6 +24,4 @@ class User extends Model
     {
         return $this->belongsTo(Role::class, 'role_id', 'role_id');
     }
-
-
 }
