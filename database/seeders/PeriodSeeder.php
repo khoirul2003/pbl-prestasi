@@ -14,7 +14,8 @@ class PeriodSeeder extends Seeder
      */
     public function run(): void
     {
-        $academicYears = AcademicYear::all();
+        $academicYears = AcademicYear::all(); // ada 4 academic year
+
 
         foreach ($academicYears as $academicYear) {
             Period::create([

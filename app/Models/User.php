@@ -24,4 +24,14 @@ class User extends Model
     {
         return $this->belongsTo(Role::class, 'role_id', 'role_id');
     }
+
+    public function detailSupervisor()
+    {
+        return $this->hasOne(DetailSupervisor::class, 'user_id', 'user_id');
+    }
+
+    public function detailStudent()
+    {
+        return $this->hasOne(DetailStudent::class, 'user_id', 'user_id');
+    }
 }
