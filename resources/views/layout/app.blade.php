@@ -23,6 +23,7 @@
         <link rel="stylesheet" href="{{ asset('template/dist/assets/css/style.css') }}">
         <link rel="shortcut icon" href="{{ asset('template/dist/assets/images/favicon.png') }}" />
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
         <style>
             .dashboard-card {
               border-radius: 1rem;
@@ -106,6 +107,7 @@
         <script src="{{ asset('template/dist/assets/js/todolist.js') }}"></script>
         <script src="{{ asset('template/dist/assets/js/jquery.cookie.js') }}" type="text/javascript"></script>
         <script src="{{ asset('template/dist/assets/js/dashboard.js') }}"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     </body>
 
