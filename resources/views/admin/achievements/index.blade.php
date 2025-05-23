@@ -36,11 +36,11 @@
                             <td>{{ ucfirst($achievement->achievement_level) }}</td>
                             <td>
                                 @if ($achievement->achievement_verified == 'pending')
-                                    <span class="badge bg-warning text-dark">Pending</span>
+                                    <span class="badge bg-warning rounded-pill text-dark">Pending</span>
                                 @elseif ($achievement->achievement_verified == 'approved')
-                                    <span class="badge bg-success">Approved</span>
+                                    <span class="badge rounded-pill bg-success">Approved</span>
                                 @elseif ($achievement->achievement_verified == 'rejected')
-                                    <span class="badge bg-danger">Rejected</span>
+                                    <span class="badge rounded-pill bg-danger">Rejected</span>
                                 @endif
                             </td>
                             <td>

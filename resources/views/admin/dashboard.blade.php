@@ -2,44 +2,49 @@
 
 @section('content')
     {{-- Summary Cards --}}
-    <div class="row mb-4">
+    <div class="row mb-4 gx-4 gy-4">
         <div class="col-md-3">
-            <div class="card text-white bg-primary mb-3">
+            <div class="card dashboard-card bg-primary-gradient">
                 <div class="card-body">
                     <h5 class="card-title">Students</h5>
-                    <h2>{{ $studentCount }}</h2>
+                    <i class="bi bi-people icon"></i>
+                    <div class="count">{{ $studentCount }}</div>
                 </div>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card text-white bg-secondary mb-3">
+            <div class="card dashboard-card bg-secondary-gradient">
                 <div class="card-body">
                     <h5 class="card-title">Supervisors</h5>
-                    <h2>{{ $supervisorCount }}</h2>
+                    <i class="bi bi-person-badge icon"></i>
+                    <div class="count">{{ $supervisorCount }}</div>
                 </div>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card text-white bg-success mb-3">
+            <div class="card dashboard-card bg-success-gradient">
                 <div class="card-body">
                     <h5 class="card-title">Competitions</h5>
-                    <h2>{{ $competitionCount }}</h2>
+                    <i class="bi bi-trophy icon"></i>
+                    <div class="count">{{ $competitionCount }}</div>
                 </div>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card text-white bg-info mb-3">
+            <div class="card dashboard-card bg-info-gradient">
                 <div class="card-body">
                     <h5 class="card-title">Achievements</h5>
-                    <h2>{{ $achievementCount }}</h2>
+                    <i class="bi bi-award icon"></i>
+                    <div class="count">{{ $achievementCount }}</div>
                 </div>
             </div>
         </div>
     </div>
 
+
     {{-- Grafik Chart.js --}}
     <div class="row mb-4">
-        <div class="col-md-6">
+        <div class="col-lg-12 col-md-12">
             <div class="card mb-3">
                 <div class="card-header">Achievement Count by Category</div>
                 <div class="card-body">
@@ -48,14 +53,14 @@
             </div>
         </div>
 
-        <div class="col-md-6">
+        {{-- <div class="col-md-6">
             <div class="card mb-3">
                 <div class="card-header">Achievement Trend by Year</div>
                 <div class="card-body">
                     <canvas id="achievementTrendChart"></canvas>
                 </div>
             </div>
-        </div>
+        </div> --}}
     </div>
 
     <div class="row mb-4">
@@ -72,7 +77,7 @@
             <div class="card mb-3">
                 <div class="card-header">Achievement Verification Status</div>
                 <div class="card-body">
-                    <canvas id="achievementStatusChart"></canvas>
+                    <canvas id="achievementStatusChart" width="200" height="100"></canvas>
                 </div>
             </div>
         </div>
@@ -187,32 +192,32 @@
         });
 
         // Line Chart: Achievement Trend by Year
-        const ctxTrend = document.getElementById('achievementTrendChart').getContext('2d');
-        const achievementTrendChart = new Chart(ctxTrend, {
-            type: 'line',
-            data: {
-                labels: {!! json_encode($trendYears) !!},
-                datasets: [
-                    @foreach ($trendData as $category => $data)
-                        {
-                            label: '{{ $category }}',
-                            data: {!! json_encode($data) !!},
-                            fill: false,
-                            borderColor: getRandomColor(),
-                            tension: 0.1
-                        },
-                    @endforeach
-                ]
-            },
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        precision: 0
-                    }
-                }
-            }
-        });
+        // const ctxTrend = document.getElementById('achievementTrendChart').getContext('2d');
+        // const achievementTrendChart = new Chart(ctxTrend, {
+        //     type: 'line',
+        //     data: {
+        //         labels: {!! json_encode($trendYears) !!},
+        //         datasets: [
+        //             @foreach ($trendData as $category => $data)
+        //                 {
+        //                     label: '{{ $category }}',
+        //                     data: {!! json_encode($data) !!},
+        //                     fill: false,
+        //                     borderColor: getRandomColor(),
+        //                     tension: 0.1
+        //                 },
+        //             @endforeach
+        //         ]
+        //     },
+        //     options: {
+        //         scales: {
+        //             y: {
+        //                 beginAtZero: true,
+        //                 precision: 0
+        //             }
+        //         }
+        //     }
+        // });
 
         // Pie Chart: Achievement Verification Status
         const ctxStatus = document.getElementById('achievementStatusChart').getContext('2d');
