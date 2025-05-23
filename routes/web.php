@@ -1,8 +1,10 @@
 <?php
 
 use App\Http\Controllers\AcademicYearController;
+use App\Http\Controllers\AchievementController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CompetitionController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\DetailStudentController;
 use App\Http\Controllers\DetailSupervisorController;
@@ -25,9 +27,15 @@ Route::prefix('admin')->group(function () {
     Route::resource('categories', CategoryController::class);
     Route::resource('periods', PeriodController::class);
     Route::resource('student_periods', StudentPeriodController::class);
-    Route::resource('student_periods', StudentPeriodController::class);
     Route::resource('supervisors', DetailSupervisorController::class);
     Route::resource('students', DetailStudentController::class);
+    Route::resource('competitions', CompetitionController::class);
+
+    Route::get('achievements', [AchievementController::class, 'index'])->name('achievements.index');
+    Route::get('achievements/{id}', [AchievementController::class, 'show'])->name('achievements.show');
+
+    Route::post('achievements/{id}/approve', [AchievementController::class, 'approve'])->name('achievements.approve');
+    Route::post('achievements/{id}/reject', [AchievementController::class, 'reject'])->name('achievements.reject');
 });
 
 Route::prefix('student')->group(function () {

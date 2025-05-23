@@ -5,7 +5,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
-        <title>Document</title>
+        <title>PRESen</title>
         {{-- <link rel="stylesheet" href="{{ asset('css/style.css') }}"> --}}
         <link rel="stylesheet" href="{{ asset('template/dist/assets/vendors/feather/feather.css') }}">
         <link rel="stylesheet" href="{{ asset('template/dist/assets/vendors/mdi/css/materialdesignicons.min.css') }}">
@@ -43,6 +43,8 @@
         <!-- Footer -->
         @include('components.footer')
 
+
+        @stack('scripts')
         <script src="{{ asset('template/dist/assets/vendors/js/vendor.bundle.base.js') }}"></script>
         <script src="{{ asset('template/dist/assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.js') }}"></script>
         <script src="{{ asset('template/dist/assets/vendors/chart.js/chart.umd.js') }}"></script>

@@ -1,12 +1,24 @@
 <nav class="sidebar sidebar-offcanvas" id="sidebar" >
     <ul class="nav" >
-        <li class="nav-item">
-            <a class="nav-link" href="{{ route('home') }}">
+
+        {{-- <li class="nav-item">
+            <a class="nav-link" href="{{ route('admin.dashboard') }}">
                 <i class="mdi bi bi-speedometer2 menu-icon"></i>
                 <span class="menu-title">Dashboard</span>
             </a>
-        </li>
+        </li> --}}
+
+
         <li class="nav-item nav-category">UI Elements</li>
+
+        <li class="nav-item">
+            <a class="nav-link" href="{{ route('admin.dashboard') }}" aria-expanded="false"
+                aria-controls="form-elements">
+                <i class="menu-icon mdi bi bi-speedometer2"></i>
+                <span class="menu-title">Dashboard</span>
+
+            </a>
+        </li>
 
         <li class="nav-item">
             <a class="nav-link" data-bs-toggle="collapse" href="#charts" aria-expanded="false" aria-controls="charts">
@@ -58,7 +70,7 @@
         </li>
 
         <li class="nav-item">
-            <a class="nav-link" href="" aria-expanded="false" aria-controls="form-elements">
+            <a class="nav-link" href="{{ route('student_periods.index') }}" aria-expanded="false" aria-controls="form-elements">
                 <i class="menu-icon mdi bi bi-calendar-range"></i>
                 <span class="menu-title">Student Periods</span>
 
@@ -66,7 +78,7 @@
         </li>
 
         <li class="nav-item">
-            <a class="nav-link" href="" aria-expanded="false" aria-controls="form-elements">
+            <a class="nav-link" href="{{ route('competitions.index') }}" aria-expanded="false" aria-controls="form-elements">
                 <i class="menu-icon mdi bi bi-trophy"></i>
                 <span class="menu-title">Competitions</span>
 
@@ -74,12 +86,12 @@
         </li>
 
         <li class="nav-item">
-            <a class="nav-link" href="" aria-expanded="false" aria-controls="form-elements">
-                <i class="menu-icon mdi bi bi-award"></i>
+            <a class="nav-link" href="{{ route('achievements.index') }}">
+                <i class="menu-icon bi bi-award"></i>
                 <span class="menu-title">Achievements</span>
-
             </a>
         </li>
+
 
         <li class="nav-item">
             <a class="nav-link" href="{{ route('categories.index') }}" aria-expanded="false"
