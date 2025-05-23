@@ -6,7 +6,6 @@
     <div class="card-body">
         <h4 class="card-title">Department Data</h4>
 
-        <!-- Button trigger modal Add -->
         <button type="button" class="btn btn-primary btn-rounded btn-fw mb-2" data-bs-toggle="modal" data-bs-target="#addDepartmentModal">
             Add Department
         </button>
