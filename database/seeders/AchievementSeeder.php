@@ -27,16 +27,28 @@ class AchievementSeeder extends Seeder
         $students = User::where('role_id', 3)->get();
         $categories = Category::all();
 
-        $totalAchievements = 80;
+        $totalAchievements = 100;
 
-        $years = [2022, 2023, 2024, 2025];
+        $yearsWithWeights = [
+            2022 => 1,
+            2023 => 2,
+            2024 => 3,
+            2025 => 4
+        ];
+
+        $weightedYears = [];
+        foreach ($yearsWithWeights as $year => $weight) {
+            for ($w = 0; $w < $weight; $w++) {
+                $weightedYears[] = $year;
+            }
+        }
 
         for ($i = 0; $i < $totalAchievements; $i++) {
 
             $student = $students->random();
             $category = $categories->random();
 
-            $year = $faker->randomElement($years);
+            $year = $faker->randomElement($weightedYears);
             $month = $faker->numberBetween(1, 12);
             $day = $faker->numberBetween(1, 28);
 
