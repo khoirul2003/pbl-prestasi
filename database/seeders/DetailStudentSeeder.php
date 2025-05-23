@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Faker\Factory as Faker;
+use Illuminate\Support\Facades\DB;
 
 class DetailStudentSeeder extends Seeder
 {
@@ -15,9 +16,11 @@ class DetailStudentSeeder extends Seeder
      */
     public function run(): void
     {
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        DetailStudent::truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
         $faker = Faker::create();
 
-        // Ambil semua user yang role_id = 3 (Student)
         $students = User::where('role_id', 3)->get();
 
         foreach ($students as $student) {

@@ -12,8 +12,7 @@
         <li class="nav-item nav-category">UI Elements</li>
 
         <li class="nav-item">
-            <a class="nav-link" href="{{ route('admin.dashboard') }}" aria-expanded="false"
-                aria-controls="form-elements">
+            <a class="nav-link" href="{{ route('admin.dashboard') }}" >
                 <i class="menu-icon mdi bi bi-speedometer2"></i>
                 <span class="menu-title">Dashboard</span>
 
@@ -35,8 +34,7 @@
         </li>
 
         <li class="nav-item">
-            <a class="nav-link" href="{{ route('departments.index') }}" aria-expanded="false"
-                aria-controls="form-elements">
+            <a class="nav-link" href="{{ route('departments.index') }}" >
                 <i class="menu-icon mdi bi bi-building"></i>
                 <span class="menu-title">Departments</span>
 
@@ -44,8 +42,7 @@
         </li>
 
         <li class="nav-item">
-            <a class="nav-link" href="{{ route('study_programs.index') }}" aria-expanded="false"
-                aria-controls="form-elements">
+            <a class="nav-link" href="{{ route('study_programs.index') }}" >
                 <i class="menu-icon mdi bi bi-journal-bookmark"></i>
                 <span class="menu-title">Study Programs</span>
 
@@ -53,8 +50,7 @@
         </li>
 
         <li class="nav-item">
-            <a class="nav-link" href="{{ route('academic_years.index') }}" aria-expanded="false"
-                aria-controls="form-elements">
+            <a class="nav-link" href="{{ route('academic_years.index') }}" >
                 <i class="menu-icon mdi bi-calendar3"></i>
                 <span class="menu-title">Academic Years</span>
 
@@ -62,7 +58,7 @@
         </li>
 
         <li class="nav-item">
-            <a class="nav-link" href="{{ route('periods.index') }}" aria-expanded="false" aria-controls="form-elements">
+            <a class="nav-link" href="{{ route('periods.index') }}">
                 <i class="menu-icon mdi bi bi-clock"></i>
                 <span class="menu-title">Periods</span>
 
@@ -70,7 +66,7 @@
         </li>
 
         <li class="nav-item">
-            <a class="nav-link" href="{{ route('student_periods.index') }}" aria-expanded="false" aria-controls="form-elements">
+            <a class="nav-link" href="{{ route('student_periods.index') }}" >
                 <i class="menu-icon mdi bi bi-calendar-range"></i>
                 <span class="menu-title">Student Periods</span>
 
@@ -78,7 +74,7 @@
         </li>
 
         <li class="nav-item">
-            <a class="nav-link" href="{{ route('competitions.index') }}" aria-expanded="false" aria-controls="form-elements">
+            <a class="nav-link" href="{{ route('competitions.index') }}" >
                 <i class="menu-icon mdi bi bi-trophy"></i>
                 <span class="menu-title">Competitions</span>
 
@@ -94,8 +90,7 @@
 
 
         <li class="nav-item">
-            <a class="nav-link" href="{{ route('categories.index') }}" aria-expanded="false"
-                aria-controls="form-elements">
+            <a class="nav-link" href="{{ route('categories.index') }}" >
                 <i class="menu-icon mdi bi bi-tags"></i>
                 <span class="menu-title">Categories</span>
 

@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Faker\Factory as Faker;
+use Illuminate\Support\Facades\DB;
 
 class DetailSupervisorSeeder extends Seeder
 {
@@ -15,6 +16,10 @@ class DetailSupervisorSeeder extends Seeder
      */
     public function run(): void
     {
+
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        DetailSupervisor::truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
         $faker = Faker::create();
 
         $supervisors = User::where('role_id', 2)->get();
