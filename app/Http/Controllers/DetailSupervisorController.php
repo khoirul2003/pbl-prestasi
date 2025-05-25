@@ -98,7 +98,7 @@ class DetailSupervisorController extends Controller
             'user_name' => 'required|string|max:255',
             'user_username' => "required|string|max:255|unique:users,user_username,{$id},user_id",
             'user_password' => [
-                'required',
+                'nullable',
                 'string',
                 'min:8',
                 'confirmed',
