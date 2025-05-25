@@ -31,7 +31,16 @@ class DetailSupervisorController extends Controller
         $request->validate([
             'user_name' => 'required|string|max:255',
             'user_username' => 'required|string|unique:users,user_username|max:255',
-            'user_password' => 'required|string|min:6|confirmed',
+            'user_password' => [
+                'required',
+                'string',
+                'min:8',
+                'confirmed',
+                'regex:/[a-z]/',
+                'regex:/[A-Z]/',
+                'regex:/[0-9]/',
+                'regex:/[@$!%*#?&]/'
+            ],
             'department_id' => 'required|exists:departments,department_id',
             'detail_supervisor_nip' => 'required|string|unique:detail_supervisors,detail_supervisor_nip',
             'detail_supervisor_gender' => 'required|in:male,female',
@@ -88,7 +97,16 @@ class DetailSupervisorController extends Controller
         $request->validate([
             'user_name' => 'required|string|max:255',
             'user_username' => "required|string|max:255|unique:users,user_username,{$id},user_id",
-            'user_password' => 'nullable|string|min:6|confirmed',
+            'user_password' => [
+                'nullable',
+                'string',
+                'min:8',
+                'confirmed',
+                'regex:/[a-z]/',
+                'regex:/[A-Z]/',
+                'regex:/[0-9]/',
+                'regex:/[@$!%*#?&]/'
+            ],
 
             'department_id' => 'required|exists:departments,department_id',
             'detail_supervisor_nip' => "required|string|unique:detail_supervisors,detail_supervisor_nip,{$user->detailSupervisor->detail_supervisor_id},detail_supervisor_id",

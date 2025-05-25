@@ -20,7 +20,7 @@
         </li>
 
         <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="collapse" href="#charts" aria-expanded="false" aria-controls="charts">
+            <a class="nav-link" data-bs-toggle="collapse" data-bs-target="#charts" aria-expanded="false" aria-controls="charts" href="javascript:void(0)">
                 <i class="menu-icon bi bi-person"></i>
                 <span class="menu-title">Users</span>
                 <i class="menu-arrow"></i>
@@ -93,6 +93,14 @@
             <a class="nav-link" href="{{ route('categories.index') }}" >
                 <i class="menu-icon mdi bi bi-tags"></i>
                 <span class="menu-title">Categories</span>
+
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" href="{{ route('skills.index') }}" >
+                <i class="menu-icon mdi bi bi-tags"></i>
+                <span class="menu-title">Skills</span>
 
             </a>
         </li>

@@ -26,57 +26,93 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
         <style>
             .dashboard-card {
-              border-radius: 1rem;
-              box-shadow: 0 8px 20px rgba(0,0,0,0.12);
-              transition: transform 0.3s ease, box-shadow 0.3s ease;
-              cursor: default;
+                border-radius: 1rem;
+                box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
+                cursor: default;
             }
+
             .dashboard-card:hover {
-              transform: translateY(-8px);
-              box-shadow: 0 16px 40px rgba(0,0,0,0.2);
+                transform: translateY(-8px);
+                box-shadow: 0 16px 40px rgba(0, 0, 0, 0.2);
             }
+
             .dashboard-card .card-body {
-              display: flex;
-              flex-direction: column;
-              align-items: center;
-              padding: 2.5rem 1.5rem;
-              color: white;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                padding: 2.5rem 1.5rem;
+                color: white;
             }
+
             .dashboard-card .card-title {
-              font-weight: 700;
-              font-size: 1.25rem;
-              margin-bottom: 1.25rem;
-              letter-spacing: 0.05em;
-              text-transform: uppercase;
-              text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+                font-weight: 700;
+                font-size: 1.25rem;
+                margin-bottom: 1.25rem;
+                letter-spacing: 0.05em;
+                text-transform: uppercase;
+                text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
             }
+
             .dashboard-card .icon {
-              font-size: 4.5rem;
-              margin-bottom: 1rem;
-              text-shadow: 0 2px 6px rgba(0,0,0,0.35);
+                font-size: 4.5rem;
+                margin-bottom: 1rem;
+                text-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
             }
+
             .dashboard-card .count {
-              font-size: 3rem;
-              font-weight: 900;
-              text-shadow: 0 3px 8px rgba(0,0,0,0.4);
+                font-size: 3rem;
+                font-weight: 900;
+                text-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
             }
+
             /* Gradient backgrounds */
             .bg-primary-gradient {
-              background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+                background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
             }
+
             .bg-secondary-gradient {
-              background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+                background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
             }
+
             .bg-success-gradient {
-              background: linear-gradient(135deg, #28a745 0%, #1c7430 100%);
+                background: linear-gradient(135deg, #28a745 0%, #1c7430 100%);
             }
+
             .bg-info-gradient {
-              background: linear-gradient(135deg, #17a2b8 0%, #117a8b 100%);
+                background: linear-gradient(135deg, #17a2b8 0%, #117a8b 100%);
             }
-          </style>
+        </style>
     </head>
 
     <body>
+        <div aria-live="polite" aria-atomic="true" class="position-relative">
+            <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1100;">
+                @if(session('success') || session('error'))
+                    @php
+                        $alertType = session('success') ? 'success' : 'danger';
+                        $alertMessage = session('success') ?? session('error');
+                    @endphp
+                    <div class="toast align-items-center text-white bg-{{ $alertType }} border-0" role="alert" aria-live="assertive" aria-atomic="true" id="liveToast">
+                        <div class="d-flex">
+                            <div class="toast-body">
+                                @switch($alertType)
+                                    @case('success')
+                                        <strong>Success:</strong> {{ $alertMessage }}
+                                        @break
+                                    @case('danger')
+                                        <strong>Error:</strong> {{ $alertMessage }}
+                                        @break
+                                    @default
+                                        {{ $alertMessage }}
+                                @endswitch
+                            </div>
+                            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                        </div>
+                    </div>
+                @endif
+            </div>
+        </div>
 
         <!-- Header -->
         @include('components.header')
@@ -96,6 +132,15 @@
 
 
         @stack('scripts')
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                var toastEl = document.getElementById('liveToast');
+                if (toastEl) {
+                    var toast = new bootstrap.Toast(toastEl);
+                    toast.show();
+                }
+            });
+        </script>
         <script src="{{ asset('template/dist/assets/vendors/js/vendor.bundle.base.js') }}"></script>
         <script src="{{ asset('template/dist/assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.js') }}"></script>
         <script src="{{ asset('template/dist/assets/vendors/chart.js/chart.umd.js') }}"></script>

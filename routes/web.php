@@ -9,6 +9,7 @@ use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\DetailStudentController;
 use App\Http\Controllers\DetailSupervisorController;
 use App\Http\Controllers\PeriodController;
+use App\Http\Controllers\SkillController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\StudentPeriodController;
 use App\Http\Controllers\StudyProgramController;
@@ -30,6 +31,7 @@ Route::prefix('admin')->group(function () {
     Route::resource('supervisors', DetailSupervisorController::class);
     Route::resource('students', DetailStudentController::class);
     Route::resource('competitions', CompetitionController::class);
+    Route::resource('skills', SkillController::class);
 
     Route::get('achievements', [AchievementController::class, 'index'])->name('achievements.index');
     Route::get('achievements/{id}', [AchievementController::class, 'show'])->name('achievements.show');
