@@ -97,5 +97,13 @@
             </a>
         </li>
 
+        <li class="nav-item">
+            <a class="nav-link" href="{{ route('skills.index') }}" >
+                <i class="menu-icon mdi bi bi-tags"></i>
+                <span class="menu-title">Skills</span>
+
+            </a>
+        </li>
+
     </ul>
 </nav>
