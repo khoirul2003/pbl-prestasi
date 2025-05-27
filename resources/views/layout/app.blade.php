@@ -21,7 +21,7 @@
             href="{{ asset('template/dist/assets/vendors/datatables.net-bs4/dataTables.bootstrap4.css') }}">
         <link rel="stylesheet" type="text/css" href="{{ asset('template/dist/assets/js/select.dataTables.min.css') }}">
         <link rel="stylesheet" href="{{ asset('template/dist/assets/css/style.css') }}">
-        <link rel="shortcut icon" href="{{ asset('template/dist/assets/images/favicon.png') }}" />
+        <link rel="shortcut icon" href="{{ asset('template/logo.png') }}" />
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
         <style>

@@ -3,6 +3,7 @@
 use App\Http\Controllers\AcademicYearController;
 use App\Http\Controllers\AchievementController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CompetitionController;
 use App\Http\Controllers\DepartmentController;
@@ -20,7 +21,16 @@ use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'home')->name('home');
 
-Route::prefix('admin')->group(function () {
+Route::get('login', [AuthController::class, 'showLoginForm'])->name('login');
+Route::post('login', [AuthController::class, 'login'])->name('login.post');
+
+Route::get('register', [AuthController::class, 'showRegisterForm'])->name('register');
+Route::post('register', [AuthController::class, 'register'])->name('register.post');
+
+Route::post('logout', [AuthController::class, 'logout'])->name('logout');
+
+
+Route::middleware('auth')->prefix('admin')->group(function () {
     Route::get('/', [AdminController::class, 'index'])->name('admin.dashboard');
     Route::resource('departments', DepartmentController::class);
     Route::resource('study_programs', StudyProgramController::class);
@@ -40,10 +50,10 @@ Route::prefix('admin')->group(function () {
     Route::post('achievements/{id}/reject', [AchievementController::class, 'reject'])->name('achievements.reject');
 });
 
-Route::prefix('student')->group(function () {
+Route::middleware('auth')->prefix('student')->group(function () {
     Route::get('/', [StudentController::class, 'index'])->name('student.dashboard');
 });
 
-Route::prefix('supervisor')->group(function () {
+Route::middleware('auth')->prefix('supervisor')->group(function () {
     Route::get('/', [SupervisorController::class, 'index'])->name('supervisor.dashboard');
 });
