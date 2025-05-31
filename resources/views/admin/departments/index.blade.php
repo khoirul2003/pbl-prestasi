@@ -1,16 +1,16 @@
 @extends('layout.app')
 
 @section('content')
-
-<div class="card">
+<div class="card shadow-sm mb-4">
     <div class="card-body">
-        <h4 class="card-title">Department Data</h4>
+        <h4 class="card-title mb-4">Department Data</h4>
 
-        <button type="button" class="btn btn-primary btn-rounded btn-fw mb-2" data-bs-toggle="modal" data-bs-target="#addDepartmentModal">
-            Add Department
+        <!-- Button to Open Add Department Modal -->
+        <button type="button" class="btn btn-primary btn-rounded btn-fw mb-3" data-bs-toggle="modal" data-bs-target="#addDepartmentModal">
+            <i class="bi bi-plus-circle me-2"></i> Add Department
         </button>
 
-        <!-- Modal Add -->
+        <!-- Modal Add Department -->
         <div class="modal fade" id="addDepartmentModal" tabindex="-1" aria-labelledby="addDepartmentLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <form action="{{ route('departments.store') }}" method="POST">
@@ -35,38 +35,40 @@
             </div>
         </div>
 
+        <!-- Table for Departments -->
         <div class="table-responsive">
-            <table class="table table-hover">
-                <thead>
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
                     <tr>
                         <th>No.</th>
                         <th>Department</th>
-                        <th>Action</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach ($departments as $department)
                     <tr>
-                        <td>{{ $department->department_id }}</td>
+                        <td>{{ $loop->iteration }}</td>
                         <td>{{ $department->department_name }}</td>
                         <td>
-
-                            <button type="button" class="btn btn-info btn-rounded btn-fw text-white" data-bs-toggle="modal" data-bs-target="#showDepartmentModal{{ $department->department_id }}">
-                                Show
+                            <!-- Show Button -->
+                            <button type="button" class="btn btn-info btn-rounded btn-sm text-white" data-bs-toggle="modal" data-bs-target="#showDepartmentModal{{ $department->department_id }}">
+                                <i class="bi bi-eye"></i> Show
                             </button>
 
-                            <button type="button" class="btn btn-warning btn-rounded btn-fw text-white" data-bs-toggle="modal" data-bs-target="#editDepartmentModal{{ $department->department_id }}">
-                                Edit
+                            <!-- Edit Button -->
+                            <button type="button" class="btn btn-warning btn-rounded btn-sm text-white" data-bs-toggle="modal" data-bs-target="#editDepartmentModal{{ $department->department_id }}">
+                                <i class="bi bi-pencil-square"></i> Edit
                             </button>
 
-                            <button type="button" class="btn btn-danger btn-rounded btn-fw" data-bs-toggle="modal" data-bs-target="#deleteDepartmentModal{{ $department->department_id }}">
-                                Delete
+                            <!-- Delete Button -->
+                            <button type="button" class="btn btn-danger btn-rounded btn-sm" data-bs-toggle="modal" data-bs-target="#deleteDepartmentModal{{ $department->department_id }}">
+                                <i class="bi bi-trash"></i> Delete
                             </button>
-
                         </td>
                     </tr>
 
-                    <!-- Modal Show -->
+                    <!-- Show Department Modal -->
                     <div class="modal fade" id="showDepartmentModal{{ $department->department_id }}" tabindex="-1" aria-labelledby="showDepartmentLabel{{ $department->department_id }}" aria-hidden="true">
                         <div class="modal-dialog">
                             <div class="modal-content">
@@ -85,7 +87,7 @@
                         </div>
                     </div>
 
-                    <!-- Modal Edit -->
+                    <!-- Edit Department Modal -->
                     <div class="modal fade" id="editDepartmentModal{{ $department->department_id }}" tabindex="-1" aria-labelledby="editDepartmentLabel{{ $department->department_id }}" aria-hidden="true">
                         <div class="modal-dialog">
                             <form action="{{ route('departments.update', $department->department_id) }}" method="POST">
@@ -111,7 +113,7 @@
                         </div>
                     </div>
 
-                    <!-- Modal Delete -->
+                    <!-- Delete Department Modal -->
                     <div class="modal fade" id="deleteDepartmentModal{{ $department->department_id }}" tabindex="-1" aria-labelledby="deleteDepartmentLabel{{ $department->department_id }}" aria-hidden="true">
                         <div class="modal-dialog">
                             <form action="{{ route('departments.destroy', $department->department_id) }}" method="POST">

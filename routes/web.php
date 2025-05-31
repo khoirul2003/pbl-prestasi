@@ -10,9 +10,13 @@ use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\DetailStudentController;
 use App\Http\Controllers\DetailSupervisorController;
 use App\Http\Controllers\PeriodController;
+use App\Http\Controllers\PreUniversityAchievementController;
+use App\Http\Controllers\RecommendationController;
 use App\Http\Controllers\SkillController;
+use App\Http\Controllers\Student\AchievementController as StudentAchievementController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\StudentPeriodController;
+use App\Http\Controllers\StudentRecommendationController;
 use App\Http\Controllers\StudyProgramController;
 use App\Http\Controllers\SupervisorController;
 use App\Models\Period;
@@ -48,10 +52,25 @@ Route::middleware('auth')->prefix('admin')->group(function () {
 
     Route::post('achievements/{id}/approve', [AchievementController::class, 'approve'])->name('achievements.approve');
     Route::post('achievements/{id}/reject', [AchievementController::class, 'reject'])->name('achievements.reject');
+
+    Route::resource('pre_university_achievements', PreUniversityAchievementController::class)
+        ->only(['index', 'show']);
+
+    Route::get('recommendations', [RecommendationController::class, 'index'])->name('admin.recommendations.index');
+    Route::get('recommendations/{competition}', [RecommendationController::class, 'showRecommendations'])->name('admin.recommendations.show');
 });
 
 Route::middleware('auth')->prefix('student')->group(function () {
     Route::get('/', [StudentController::class, 'index'])->name('student.dashboard');
+    Route::get('/profile', [StudentController::class, 'profile'])->name('student.profile');
+    Route::post('/profile/update', [StudentController::class, 'updateProfile'])->name('student.profile.update');
+    Route::get('/recommendations', [StudentRecommendationController::class, 'index'])->name('student.recommendations.index');
+
+    Route::get('/achievements', [StudentAchievementController::class, 'index'])->name('student.achievements.index');
+    Route::get('/achievements/{id}', [StudentAchievementController::class, 'show'])->name('student.achievements.show');
+    Route::post('/achievements', [StudentAchievementController::class, 'store'])->name('student.achievements.store');
+    Route::put('/achievements/{id}', [StudentAchievementController::class, 'update'])->name('student.achievements.update');
+    Route::delete('/achievements/{id}', [StudentAchievementController::class, 'destroy'])->name('student.achievements.destroy');
 });
 
 Route::middleware('auth')->prefix('supervisor')->group(function () {

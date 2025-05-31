@@ -11,9 +11,15 @@ class Skill extends Model
 
     protected $table = 'skills';
 
+    protected $primaryKey = 'skill_id';
+
     protected $fillable = [
         'skill_name',
+        'category_id',
     ];
 
-    protected $primaryKey = 'skill_id';
+    public function category()
+    {
+        return $this->belongsTo(Category::class, 'category_id', 'category_id');
+    }
 }

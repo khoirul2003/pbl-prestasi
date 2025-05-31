@@ -13,7 +13,7 @@ class AdminController extends Controller
 {
     public function index()
     {
-        $studentCount = User::where('role_id', 3)->count(); 
+        $studentCount = User::where('role_id', 3)->count();
         $supervisorCount = User::where('role_id', 2)->count();
         $achievementCount = Achievement::count();
         $competitionCount = Competition::count();
@@ -74,6 +74,19 @@ class AdminController extends Controller
             ->limit(5)
             ->get();
 
+        $achievementTrendYears = DB::table('achievements')
+            ->select(DB::raw('YEAR(created_at) as year'))
+            ->distinct()
+            ->orderBy('year')
+            ->pluck('year')
+            ->toArray();
+
+        $achievementTrendCounts = [];
+        foreach ($achievementTrendYears as $year) {
+            $count = Achievement::whereYear('created_at', $year)->count();
+            $achievementTrendCounts[] = $count;
+        }
+
         return view('admin.dashboard', compact(
             'studentCount',
             'supervisorCount',
@@ -86,7 +99,9 @@ class AdminController extends Controller
             'trendYears',
             'trendData',
             'verificationStatus',
-            'studentDistribution'
+            'studentDistribution',
+            'achievementTrendYears',
+            'achievementTrendCounts'
         ));
     }
 }

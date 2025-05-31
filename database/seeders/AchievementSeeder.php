@@ -6,7 +6,6 @@ use App\Models\Achievement;
 use App\Models\Category;
 use App\Models\User;
 use Carbon\Carbon;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Faker\Factory as Faker;
@@ -27,7 +26,7 @@ class AchievementSeeder extends Seeder
         $students = User::where('role_id', 3)->get();
         $categories = Category::all();
 
-        $totalAchievements = 100;
+        $totalAchievements = 200;
 
         $yearsWithWeights = [
             2022 => 1,
@@ -41,6 +40,26 @@ class AchievementSeeder extends Seeder
             for ($w = 0; $w < $weight; $w++) {
                 $weightedYears[] = $year;
             }
+        }
+
+        $weights = [
+            'approved' => 80,
+            'pending' => 10,
+            'rejected' => 10,
+        ];
+
+        // Fungsi memilih status achievement_verified dengan probabilitas bobot
+        function weightedRandomStatus(array $weights)
+        {
+            $rand = mt_rand(1, array_sum($weights));
+            $cumulative = 0;
+            foreach ($weights as $status => $weight) {
+                $cumulative += $weight;
+                if ($rand <= $cumulative) {
+                    return $status;
+                }
+            }
+            return null; // fallback, seharusnya tidak terjadi
         }
 
         for ($i = 0; $i < $totalAchievements; $i++) {
@@ -59,10 +78,10 @@ class AchievementSeeder extends Seeder
                 'category_id' => $category->category_id,
                 'achievement_title' => $faker->sentence(5, true),
                 'achievement_description' => $faker->paragraph,
-                'achievement_ranking' => $faker->numberBetween(1, 3),
+                'achievement_ranking' => $faker->numberBetween(1, 6),
                 'achievement_level' => $faker->randomElement(['regional', 'nasional', 'internasional']),
                 'achievement_document' => null,
-                'achievement_verified' => $faker->randomElement(['approved', 'rejected', 'pending']),
+                'achievement_verified' => weightedRandomStatus($weights),
                 'created_at' => $createdAt,
                 'updated_at' => $createdAt,
             ]);

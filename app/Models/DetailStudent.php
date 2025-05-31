@@ -40,4 +40,14 @@ class DetailStudent extends Model
     {
         return $this->belongsTo(User::class, 'user_id', 'user_id');
     }
+
+    public function studentSkills()
+    {
+        return $this->hasMany(StudentSkill::class, 'detail_student_id', 'detail_student_id');
+    }
+
+    public function studentPeriods()
+    {
+        return $this->hasMany(StudentPeriod::class, 'detail_student_id', 'detail_student_id');
+    }
 }
