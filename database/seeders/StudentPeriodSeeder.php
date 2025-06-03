@@ -35,7 +35,7 @@ class StudentPeriodSeeder extends Seeder
                 StudentPeriod::create([
                     'period_id' => $period->period_id,
                     'detail_student_id' => $student->detail_student_id,
-                    'ipk' => $faker->randomFloat(2, 2.0, 4.0),
+                    'ipk' => $faker->randomFloat(2, 3.5, 4.0),
                 ]);
             }
         }

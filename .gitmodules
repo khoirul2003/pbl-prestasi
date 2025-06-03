@@ -1,0 +1,3 @@
+[submodule "public/landing_page"]
+	path = public/landing_page
+	url = https://github.com/khoirul2003/template-landing-page

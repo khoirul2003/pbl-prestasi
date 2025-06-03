@@ -2,7 +2,9 @@
 
 namespace Database\Seeders;
 
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Achievement;
+use App\Models\DetailStudent;
+use App\Models\StudentSkill;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -12,11 +14,23 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // \App\Models\User::factory(10)->create();
-
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+        $this->call([
+            RoleSeeder::class,
+            AcademicYearSeeder::class,
+            PeriodSeeder::class,
+            DepartmentSeeder::class,
+            StudyProgramSeeder::class,
+            UserSeeder::class,
+            DetailStudentSeeder::class,
+            DetailSupervisorSeeder::class,
+            CategorySeeder::class,
+            CompetitionSeeder::class,
+            StudentPeriodSeeder::class,
+            SkillSeeder::class,
+            StudentSkillSeeder::class,
+            SupervisorSkillSeeder::class,
+            AchievementSeeder::class,
+            PreUniversityAchievementSeeder::class
+        ]);
     }
 }

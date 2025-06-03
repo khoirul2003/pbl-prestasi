@@ -30,7 +30,7 @@ class UserSeeder extends Seeder
         ]);
 
         // Supervisor
-        for ($i = 1; $i <= 15; $i++) {
+        for ($i = 1; $i <= 50; $i++) {
             User::create([
                 'role_id' => 2,
                 'user_name' => "Supervisor $i",
@@ -40,7 +40,7 @@ class UserSeeder extends Seeder
         }
 
         // Student
-        for ($i = 1; $i <= 20; $i++) {
+        for ($i = 1; $i <= 80; $i++) {
             User::create([
                 'role_id' => 3,
                 'user_name' => "Student $i",

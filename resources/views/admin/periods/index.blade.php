@@ -1,13 +1,18 @@
 @extends('layout.app')
 
 @section('content')
-<div class="card">
+
+<div class="card shadow-sm rounded-3 mb-4">
     <div class="card-body">
-        <h4 class="card-title">Period Data</h4>
-        <a href="{{ route('periods.create') }}" class="btn btn-primary btn-rounded btn-fw mb-2">Add Period</a>
+        <h4 class="card-title mb-3">Period Data</h4>
+
+        <a href="{{ route('periods.create') }}" class="btn btn-primary btn-rounded btn-fw mb-2">
+            <i class="bi bi-plus-circle me-2"></i> Add Period
+        </a>
+
         <div class="table-responsive">
-            <table class="table table-hover">
-                <thead>
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
                     <tr>
                         <th>No.</th>
                         <th>Academic Year</th>
@@ -23,15 +28,19 @@
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $period->academic_year->academic_year ?? '-' }}</td>
                             <td>{{ $period->period_name }}</td>
-                            <td>{{ $period->start_date }}</td>
-                            <td>{{ $period->end_date }}</td>
-                            <td>
-                                <a href="{{ route('periods.show', $period->period_id) }}" class="btn btn-info btn-rounded btn-fw">Show</a>
-                                <a href="{{ route('periods.edit', $period->period_id) }}" class="btn btn-warning btn-rounded btn-fw">Edit</a>
+                            <td>{{ \Carbon\Carbon::parse($period->start_date)->format('d-m-Y') }}</td>
+                            <td>{{ \Carbon\Carbon::parse($period->end_date)->format('d-m-Y') }}</td>
+                            <td class="d-flex">
+
+                                <a href="{{ route('periods.edit', $period->period_id) }}" class="btn btn-warning btn-sm btn-rounded me-2" data-bs-toggle="tooltip" title="Edit Period">
+                                    <i class="bi bi-pencil-square"></i>
+                                </a>
                                 <form action="{{ route('periods.destroy', $period->period_id) }}" method="POST" style="display:inline;">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="btn btn-danger btn-rounded btn-fw" onclick="return confirm('Are you sure?')">Delete</button>
+                                    <button type="submit" class="btn btn-danger btn-sm btn-rounded" onclick="return confirm('Are you sure?')" data-bs-toggle="tooltip" title="Delete Period">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
                                 </form>
                             </td>
                         </tr>
@@ -39,6 +48,23 @@
                 </tbody>
             </table>
         </div>
+
+        <div class="mt-3">
+            {{ $periods->links() }}
+        </div>
     </div>
 </div>
+
 @endsection
+
+@push('scripts')
+<script>
+    // Activate tooltips
+    document.addEventListener('DOMContentLoaded', function () {
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        tooltipTriggerList.forEach(function (tooltipTriggerEl) {
+            new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+    });
+</script>
+@endpush

@@ -6,6 +6,7 @@ use App\Models\AcademicYear;
 use Carbon\Carbon;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class AcademicYearSeeder extends Seeder
 {
@@ -14,6 +15,9 @@ class AcademicYearSeeder extends Seeder
      */
     public function run(): void
     {
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        AcademicYear::truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
         $academicYears = [
             [
                 'academic_year' => '2021/2022',

@@ -6,6 +6,7 @@ use App\Models\AcademicYear;
 use App\Models\Period;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class PeriodSeeder extends Seeder
 {
@@ -14,7 +15,10 @@ class PeriodSeeder extends Seeder
      */
     public function run(): void
     {
-        $academicYears = AcademicYear::all(); // ada 4 academic year
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        Period::truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        $academicYears = AcademicYear::all();
 
 
         foreach ($academicYears as $academicYear) {

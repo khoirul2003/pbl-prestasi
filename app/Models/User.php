@@ -4,8 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class User extends Model
+class User extends Authenticatable
 {
     use HasFactory;
 
@@ -33,5 +34,11 @@ class User extends Model
     public function detailStudent()
     {
         return $this->hasOne(DetailStudent::class, 'user_id', 'user_id');
+    }
+
+    public function supervisorSkills()
+    {
+        return $this->hasOne(DetailSupervisor::class, 'user_id', 'user_id')
+            ->with('supervisorSkills');
     }
 }
