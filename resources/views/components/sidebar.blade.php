@@ -42,8 +42,16 @@
             <li class="nav-item"><a class="nav-link" href="{{ route('student_periods.index') }}"><i
                         class="menu-icon mdi bi bi-calendar-range"></i><span class="menu-title">Student
                         Periods</span></a></li>
-            <li class="nav-item"><a class="nav-link" href="{{ route('competitions.index') }}"><i
-                        class="menu-icon mdi bi bi-trophy"></i><span class="menu-title">Competitions</span></a></li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('competitions.index') }}">
+                    <i class="menu-icon mdi bi bi-trophy"></i><span class="menu-title">Competitions</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('admin.requests.index') }}">
+                    <i class="menu-icon mdi bi bi-trophy"></i><span class="menu-title">Competitions Request</span>
+                </a>
+            </li>
             <li class="nav-item"><a class="nav-link" href="{{ route('achievements.index') }}"><i
                         class="menu-icon bi bi-award"></i><span class="menu-title">Achievements</span></a></li>
             <li class="nav-item"><a class="nav-link" href="{{ route('pre_university_achievements.index') }}"><i
@@ -85,6 +93,13 @@
                 <a class="nav-link" href="{{ route('student.achievements.index') }}">
                     <i class="menu-icon mdi bi bi-person"></i>
                     <span class="menu-title">Achievements</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('student.competitions.index') }}">
+                    <i class="menu-icon mdi bi bi-person"></i>
+                    <span class="menu-title">Competition Requets</span>
                 </a>
             </li>
         @endif

@@ -35,4 +35,10 @@ class User extends Authenticatable
     {
         return $this->hasOne(DetailStudent::class, 'user_id', 'user_id');
     }
+
+    public function supervisorSkills()
+    {
+        return $this->hasOne(DetailSupervisor::class, 'user_id', 'user_id')
+            ->with('supervisorSkills');
+    }
 }

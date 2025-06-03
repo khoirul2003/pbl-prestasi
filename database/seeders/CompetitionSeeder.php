@@ -35,6 +35,7 @@ class CompetitionSeeder extends Seeder
                 'competition_description' => $faker->paragraph,
                 'competition_organizer' => $faker->company,
                 'competition_level' => $faker->randomElement(['regional', 'nasional', 'internasional']),
+                'competition_registration_start' => $faker->dateTimeBetween('now', '+2 months')->format('Y-m-d'),
                 'competition_registration_deadline' => $faker->dateTimeBetween('now', '+2 months')->format('Y-m-d'),
                 'competition_registion_link' => $faker->url,
                 'competition_document' => null,

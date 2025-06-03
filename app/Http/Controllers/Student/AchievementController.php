@@ -4,10 +4,9 @@ namespace App\Http\Controllers\Student;
 
 use App\Http\Controllers\Controller;
 use App\Models\Achievement;
-use App\Models\Category; 
+use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
 
 class AchievementController extends Controller
 {
@@ -17,7 +16,6 @@ class AchievementController extends Controller
             ->where('user_id', Auth::id())
             ->orderBy('created_at', 'desc')
             ->get();
-
 
         $categories = Category::all();
 
@@ -40,7 +38,7 @@ class AchievementController extends Controller
             'achievement_title' => 'required|string|max:255',
             'achievement_description' => 'nullable|string',
             'achievement_ranking' => 'nullable|string|max:100',
-            'achievement_level' => 'nullable|string|max:100',
+            'achievement_level' => 'required|in:regional,nasional,internasional',
             'achievement_document' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
         ]);
 
@@ -60,12 +58,11 @@ class AchievementController extends Controller
             'achievement_ranking' => $request->achievement_ranking,
             'achievement_level' => $request->achievement_level,
             'achievement_document' => $fileName,
-            'achievement_verified' => false,
+            'achievement_verified' => 'pending', 
         ]);
 
         return redirect()->back()->with('success', 'Achievement created successfully.');
     }
-
 
     public function update(Request $request, $id)
     {
@@ -76,7 +73,7 @@ class AchievementController extends Controller
             'achievement_title' => 'required|string|max:255',
             'achievement_description' => 'nullable|string',
             'achievement_ranking' => 'nullable|string|max:100',
-            'achievement_level' => 'nullable|string|max:100',
+            'achievement_level' => 'required|in:regional,nasional,internasional',
             'achievement_document' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
         ]);
 
@@ -98,6 +95,7 @@ class AchievementController extends Controller
             'achievement_ranking' => $request->achievement_ranking,
             'achievement_level' => $request->achievement_level,
             'achievement_document' => $fileName,
+
         ]);
 
         return redirect()->back()->with('success', 'Achievement updated successfully.');
@@ -108,7 +106,6 @@ class AchievementController extends Controller
         $achievement = Achievement::where('user_id', Auth::id())->findOrFail($id);
 
         if ($achievement->achievement_document) {
-
             $filePath = public_path('documents/achievements/' . $achievement->achievement_document);
             if (file_exists($filePath)) {
                 unlink($filePath);

@@ -17,6 +17,7 @@ class Competition extends Model
         'competition_description',
         'competition_organizer',
         'competition_level',
+        'competition_registration_start',
         'competition_registration_deadline',
         'competition_registion_link',
         'competition_document',
@@ -27,5 +28,10 @@ class Competition extends Model
     public function category()
     {
         return $this->belongsTo(Category::class, 'category_id', 'category_id');
+    }
+
+    public function competitionRequests()
+    {
+        return $this->hasMany(CompetitionRequest::class, 'competition_id', 'competition_id');
     }
 }

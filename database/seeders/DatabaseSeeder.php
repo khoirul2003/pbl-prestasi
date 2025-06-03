@@ -28,6 +28,7 @@ class DatabaseSeeder extends Seeder
             StudentPeriodSeeder::class,
             SkillSeeder::class,
             StudentSkillSeeder::class,
+            SupervisorSkillSeeder::class,
             AchievementSeeder::class,
             PreUniversityAchievementSeeder::class
         ]);

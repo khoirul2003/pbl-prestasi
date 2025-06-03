@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Achievement;
+use App\Models\Competition;
 use App\Models\DetailStudent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class StudentController extends Controller
 {
-    public function index()
-    {
-        return view('student.dashboard');
-    }
+
 
     public function profile()
     {
@@ -74,5 +74,70 @@ class StudentController extends Controller
         ]);
 
         return redirect()->back()->with('success', 'Profile updated successfully.');
+    }
+
+    public function index()
+    {
+        $student = Auth::user();
+
+        $achievementCount = Achievement::where('user_id', $student->user_id)->count();
+
+        $recentAchievements = Achievement::where('user_id', $student->user_id)
+            ->join('categories', 'achievements.category_id', '=', 'categories.category_id')
+            ->select('achievements.achievement_title', 'categories.category_name', DB::raw('YEAR(achievements.created_at) as achievement_year'))
+            ->orderBy('achievements.created_at', 'desc')
+            ->limit(10)
+            ->get();
+
+        $upcomingCompetitions = Competition::where('competition_registration_deadline', '>', now())
+            ->orderBy('competition_registration_deadline', 'asc')
+            ->limit(5)
+            ->get();
+
+        $verificationStatus = Achievement::where('user_id', $student->user_id)
+            ->select('achievement_verified', DB::raw('count(*) as total'))
+            ->groupBy('achievement_verified')
+            ->get();
+
+        $achievementStats = DB::table('achievements')
+            ->where('user_id', $student->user_id)
+            ->join('categories', 'achievements.category_id', '=', 'categories.category_id')
+            ->select('categories.category_name', DB::raw('count(*) as total'))
+            ->groupBy('categories.category_name')
+            ->get();
+
+        $achievementTrendYears = Achievement::where('user_id', $student->user_id)
+            ->select(DB::raw('YEAR(created_at) as year'))
+            ->distinct()
+            ->orderBy('year')
+            ->pluck('year')
+            ->toArray();
+
+        $achievementTrendCounts = [];
+        foreach ($achievementTrendYears as $year) {
+            $count = Achievement::where('user_id', $student->user_id)
+                ->whereYear('created_at', $year)
+                ->count();
+            $achievementTrendCounts[] = $count;
+        }
+
+        $topStudents = Achievement::select('users.user_name as student_name', DB::raw('count(*) as achievement_count'))
+            ->join('users', 'achievements.user_id', '=', 'users.user_id')
+            ->groupBy('users.user_name')
+            ->orderByDesc('achievement_count')
+            ->limit(10)
+            ->get();
+
+        return view('student.dashboard', compact(
+            'student',
+            'achievementCount',
+            'recentAchievements',
+            'upcomingCompetitions',
+            'verificationStatus',
+            'achievementStats',
+            'achievementTrendYears',
+            'achievementTrendCounts',
+            'topStudents'
+        ));
     }
 }

@@ -8,7 +8,10 @@ use App\Models\StudentPeriod;
 use App\Models\StudentSkill;
 use App\Models\User;
 use App\Models\Competition;
+use App\Models\DetailSupervisor;
+use App\Models\RecommendationResult;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 
 class RecommendationController extends Controller
@@ -214,20 +217,45 @@ class RecommendationController extends Controller
         $topResults = array_slice($results, 0, 5);
 
         foreach ($topResults as $result) {
-            DB::table('recommendation_results')->updateOrInsert(
+            $student = $result['student'];
+
+
+            $matchingSupervisors = DetailSupervisor::whereHas('supervisorSkills.skill', function ($query) use ($categoryId) {
+                $query->where('category_id', $categoryId);
+            })->get();
+
+
+            $selectedSupervisor = $matchingSupervisors->isNotEmpty()
+                ? $matchingSupervisors->random()
+                : null;
+
+            RecommendationResult::updateOrCreate(
                 [
                     'competition_id' => $competition->competition_id,
-                    'user_id' => $result['student']->user_id
+                    'user_id' => $student->user_id
                 ],
                 [
                     'recommendation_result_score' => $result['score'],
-                    'updated_at' => now(),
-                    'created_at' => now()
+                    'detail_supervisor_id' => $selectedSupervisor?->detail_supervisor_id,
                 ]
             );
         }
 
+        $perPage = 10;
+        $page = request()->get('page', 1);
+        $offset = ($page - 1) * $perPage;
+        $pagedResults = array_slice($results, $offset, $perPage);
 
-        return view('admin.recommendations.show', compact('competition', 'results'));
+        $paginator = new LengthAwarePaginator(
+            $pagedResults,
+            count($results),
+            $perPage,
+            $page,
+            ['path' => request()->url(), 'query' => request()->query()]
+        );
+
+
+
+        return view('admin.recommendations.show', compact('competition'))->with('results', $paginator);
     }
 }

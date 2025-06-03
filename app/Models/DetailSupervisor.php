@@ -30,7 +30,13 @@ class DetailSupervisor extends Model
         return $this->belongsTo(Department::class, 'department_id', 'department_id');
     }
 
-    public function detailSupervisor()
+
+    public function supervisorSkills()
+    {
+        return $this->hasMany(SupervisorSkill::class, 'detail_supervisor_id', 'detail_supervisor_id');
+    }
+
+    public function user()
     {
         return $this->belongsTo(User::class, 'user_id', 'user_id');
     }

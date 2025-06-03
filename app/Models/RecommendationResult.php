@@ -16,6 +16,7 @@ class RecommendationResult extends Model
     protected $fillable = [
         'user_id',
         'competition_id',
+        'detail_supervisor_id',
         'recommendation_result_score',
     ];
 
@@ -27,5 +28,10 @@ class RecommendationResult extends Model
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id', 'user_id');
+    }
+
+    public function supervisor()
+    {
+        return $this->belongsTo(DetailSupervisor::class, 'detail_supervisor_id', 'detail_supervisor_id');
     }
 }
