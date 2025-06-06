@@ -4,13 +4,22 @@
 
 <div class="card shadow-sm mb-4">
     <div class="card-body">
-        <h4 class="card-title mb-4">Competition Recommendation Results: <strong>{{ $competition->competition_name }}</strong></h4>
+        <h4 class="card-title mb-4">
+            Competition Recommendation Results: <strong>{{ $competition->competition_name }}</strong>
+        </h4>
 
         @if($results->isEmpty())
             <div class="alert alert-warning">
                 No recommendation data available.
             </div>
         @else
+            <div class="mb-3 d-flex justify-content-end">
+                <a href="{{ route('admin.recommendations.export', ['competition' => $competition->competition_id]) }}"
+                   class="btn btn-success">
+                    <i class="bi bi-file-earmark-excel"></i> Export to Excel
+                </a>
+            </div>
+
             <div class="table-responsive">
                 <table class="table table-hover align-middle">
                     <thead class="table-light">

@@ -9,6 +9,35 @@
                 <div class="alert alert-success">{{ session('success') }}</div>
             @endif
 
+            {{-- Filter Tabs --}}
+            <ul class="nav nav-tabs mb-4">
+                <li class="nav-item">
+                    <a class="nav-link {{ request('status') == null ? 'active' : '' }}"
+                        href="{{ route('admin.competitions.index') }}">
+                        <i class="bi bi-list"></i> All Competitions
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ request('status') == 'pending' ? 'active' : '' }}"
+                        href="{{ route('admin.competitions.index', ['status' => 'pending']) }}">
+                        <i class="bi bi-clock"></i> Pending Requests
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ request('status') == 'approved' ? 'active' : '' }}"
+                        href="{{ route('admin.competitions.index', ['status' => 'approved']) }}">
+                        <i class="bi bi-check-circle"></i> Approved Requests
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ request('status') == 'rejected' ? 'active' : '' }}"
+                        href="{{ route('admin.competitions.index', ['status' => 'rejected']) }}">
+                        <i class="bi bi-x-circle"></i> Rejected Requests
+                    </a>
+                </li>
+                
+            </ul>
+
             <div class="mb-3">
                 <button class="btn btn-primary btn-rounded btn-fw mb-3" data-bs-toggle="modal" data-bs-target="#addModal">
                     <i class="bi bi-plus-circle me-2"></i> Add Competition
@@ -51,7 +80,7 @@
                                     <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editModal{{ $competition->competition_id }}">
                                         <i class="bi bi-pencil-square"></i>
                                     </button>
-                                    <form action="{{ route('competitions.destroy', $competition->competition_id) }}" method="POST" class="d-inline">
+                                    <form action="{{ route('admin.competitions.destroy', $competition->competition_id) }}" method="POST" class="d-inline">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure want to delete this competition?')">
@@ -62,157 +91,14 @@
                             </tr>
 
                             {{-- Modal Show --}}
-                            <div class="modal fade" id="showModal{{ $competition->competition_id }}" tabindex="-1"
-                                aria-labelledby="showModalLabel{{ $competition->competition_id }}" aria-hidden="true">
-                                <div class="modal-dialog modal-lg modal-dialog-scrollable">
-                                    <div class="modal-content">
-                                        <div class="modal-header bg-primary text-white">
-                                            <h5 class="modal-title" id="showModalLabel{{ $competition->competition_id }}">
-                                                <i class="bi bi-info-circle"></i> Competition Detail
-                                            </h5>
-                                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <ul class="list-group list-group-flush">
-                                                <li class="list-group-item"><strong>Title:</strong> {{ $competition->competition_tittle }}</li>
-                                                <li class="list-group-item"><strong>Category:</strong> {{ $competition->category->category_name ?? '-' }}</li>
-                                                <li class="list-group-item"><strong>Organizer:</strong> {{ $competition->competition_organizer }}</li>
-                                                <li class="list-group-item"><strong>Description:</strong> {{ $competition->competition_description }}</li>
-                                                <li class="list-group-item"><strong>Level:</strong> {{ $competition->competition_level }}</li>
-                                                <li class="list-group-item"><strong>Registration Start:</strong> {{ $competition->competition_registration_start }}</li>
-                                                <li class="list-group-item"><strong>Deadline:</strong> {{ $competition->competition_registration_deadline }}</li>
-                                                @if ($competition->competition_registion_link)
-                                                    <li class="list-group-item">
-                                                        <strong>Link:</strong> <a href="{{ $competition->competition_registion_link }}" target="_blank">View</a>
-                                                    </li>
-                                                @endif
-                                            </ul>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            @include('admin.competitions.modals.show', ['competition' => $competition])
 
                             {{-- Modal PDF Viewer --}}
-                            @if ($competition->competition_document)
-                                <div class="modal fade" id="pdfModal{{ $competition->competition_id }}" tabindex="-1"
-                                    aria-labelledby="pdfModalLabel{{ $competition->competition_id }}" aria-hidden="true">
-                                    <div class="modal-dialog modal-xl modal-dialog-scrollable">
-                                        <div class="modal-content">
-                                            <div class="modal-header bg-primary text-white">
-                                                <h5 class="modal-title" id="pdfModalLabel{{ $competition->competition_id }}">
-                                                    <i class="bi bi-file-earmark-pdf"></i> Document - {{ $competition->competition_tittle }}
-                                                </h5>
-                                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                                            </div>
-                                            <div class="modal-body p-0">
-                                                <div class="d-flex justify-content-between align-items-center p-3 bg-light border-bottom">
-                                                    <small class="text-muted">
-                                                        Document for: <strong>{{ $competition->competition_tittle }}</strong>
-                                                    </small>
-                                                    <div>
-                                                        <a href="{{ asset($competition->competition_document) }}" target="_blank"
-                                                            class="btn btn-outline-primary btn-sm me-2">
-                                                            <i class="bi bi-box-arrow-up-right"></i> Open in New Tab
-                                                        </a>
-                                                        <a href="{{ asset($competition->competition_document) }}" download
-                                                            class="btn btn-outline-success btn-sm">
-                                                            <i class="bi bi-download"></i> Download
-                                                        </a>
-                                                    </div>
-                                                </div>
-                                                <div style="height: 75vh;">
-                                                    <iframe src="{{ asset($competition->competition_document) }}" width="100%" height="100%"
-                                                        style="border: none;" title="PDF Document">
-                                                        <p>Your browser does not support PDFs.
-                                                            <a href="{{ asset($competition->competition_document) }}" target="_blank">
-                                                                Click here to download the PDF
-                                                            </a>
-                                                        </p>
-                                                    </iframe>
-                                                </div>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            @endif
+                            @include('admin.competitions.modals.pdf', ['competition' => $competition])
 
                             {{-- Modal Edit --}}
-                            <div class="modal fade" id="editModal{{ $competition->competition_id }}" tabindex="-1"
-                                aria-labelledby="editModalLabel{{ $competition->competition_id }}" aria-hidden="true">
-                                <div class="modal-dialog modal-lg modal-dialog-scrollable">
-                                    <form class="modal-content" method="POST" action="{{ route('competitions.update', $competition->competition_id) }}" enctype="multipart/form-data">
-                                        @csrf
-                                        @method('PUT')
-                                        <div class="modal-header bg-primary text-white">
-                                            <h5 class="modal-title" id="editModalLabel{{ $competition->competition_id }}">
-                                                <i class="bi bi-pencil-square"></i> Edit Competition
-                                            </h5>
-                                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <div class="mb-3">
-                                                <label class="form-label">Title</label>
-                                                <input type="text" name="competition_tittle" class="form-control" value="{{ $competition->competition_tittle }}" required>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label class="form-label">Category</label>
-                                                <select name="category_id" class="form-select" required>
-                                                    @foreach(\App\Models\Category::all() as $category)
-                                                        <option value="{{ $category->category_id }}" {{ $category->category_id == $competition->category_id ? 'selected' : '' }}>
-                                                            {{ $category->category_name }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label class="form-label">Organizer</label>
-                                                <input type="text" name="competition_organizer" class="form-control" value="{{ $competition->competition_organizer }}" required>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label class="form-label">Description</label>
-                                                <textarea name="competition_description" class="form-control" rows="3" required>{{ $competition->competition_description }}</textarea>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label class="form-label">Level</label>
-                                                <select name="competition_level" class="form-select" required>
-                                                    <option value="regional" {{ $competition->competition_level == 'regional' ? 'selected' : '' }}>Regional</option>
-                                                    <option value="nasional" {{ $competition->competition_level == 'nasional' ? 'selected' : '' }}>Nasional</option>
-                                                    <option value="internasional" {{ $competition->competition_level == 'internasional' ? 'selected' : '' }}>Internasional</option>
-                                                </select>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label class="form-label">Start Registration</label>
-                                                <input type="date" name="competition_registration_start" class="form-control" value="{{ $competition->competition_registration_start }}" required>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label class="form-label">Deadline Registration</label>
-                                                <input type="date" name="competition_registration_deadline" class="form-control" value="{{ $competition->competition_registration_deadline }}" required>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label class="form-label">Registration Link</label>
-                                                <input type="url" name="competition_registion_link" class="form-control" value="{{ $competition->competition_registion_link }}" required>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label class="form-label">Upload Document</label>
-                                                <input type="file" name="competition_document" class="form-control">
-                                                @if ($competition->competition_document)
-                                                    <small class="text-muted">Current: {{ basename($competition->competition_document) }}</small>
-                                                @endif
-                                            </div>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="submit" class="btn btn-primary">Update</button>
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
+                            @include('admin.competitions.modals.edit', ['competition' => $competition])
+
                         @empty
                             <tr>
                                 <td colspan="6" class="text-center">No competitions found.</td>
@@ -229,70 +115,5 @@
     </div>
 
     {{-- Modal Add Competition --}}
-    <div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-scrollable">
-            <form class="modal-content" method="POST" action="{{ route('competitions.store') }}" enctype="multipart/form-data">
-                @csrf
-                <div class="modal-header bg-success text-white">
-                    <h5 class="modal-title" id="addModalLabel">
-                        <i class="bi bi-plus-circle"></i> Add New Competition
-                    </h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label class="form-label">Title</label>
-                        <input type="text" name="competition_tittle" class="form-control" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Category</label>
-                        <select name="category_id" class="form-select" required>
-                            <option value="">Select Category</option>
-                            @foreach(\App\Models\Category::all() as $category)
-                                <option value="{{ $category->category_id }}">{{ $category->category_name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Organizer</label>
-                        <input type="text" name="competition_organizer" class="form-control" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Description</label>
-                        <textarea name="competition_description" class="form-control" rows="3" required></textarea>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Level</label>
-                        <select name="competition_level" class="form-select" required>
-                            <option value="">Select Level</option>
-                            <option value="regional">Regional</option>
-                            <option value="nasional">Nasional</option>
-                            <option value="internasional">Internasional</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Start Registration</label>
-                        <input type="date" name="competition_registration_start" class="form-control" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Deadline Registration</label>
-                        <input type="date" name="competition_registration_deadline" class="form-control" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Registration Link</label>
-                        <input type="url" name="competition_registion_link" class="form-control" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Upload Document</label>
-                        <input type="file" name="competition_document" class="form-control">
-                        <small class="text-muted">Optional: Upload competition document (PDF recommended)</small>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-success">Add Competition</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                </div>
-            </form>
-        </div>
-    </div>
+    @include('admin.competitions.modals.add')
 @endsection

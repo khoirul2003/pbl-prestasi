@@ -5,13 +5,14 @@ namespace App\Http\Controllers;
 use App\Models\Achievement;
 use App\Models\Competition;
 use App\Models\DetailStudent;
+use App\Models\Skill;
+use App\Models\StudentSkill;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class StudentController extends Controller
 {
-
 
     public function profile()
     {
@@ -22,6 +23,8 @@ class StudentController extends Controller
             'studentSkills.skill',
             'studentPeriods.period'
         ])->where('user_id', auth()->id())->firstOrFail();
+
+        $allSkills = Skill::all();
 
         $averageIpk = null;
         $latestPeriod = null;
@@ -38,8 +41,10 @@ class StudentController extends Controller
             $averageIpk = $student->studentPeriods->avg('ipk');
         }
 
-        return view('student.profile.index', compact('student', 'averageIpk', 'latestPeriod', 'semesterCount'));
+        return view('student.profile.index', compact('student', 'averageIpk', 'latestPeriod', 'semesterCount', 'allSkills'));
     }
+
+
 
     public function updateProfile(Request $request)
     {
@@ -51,6 +56,8 @@ class StudentController extends Controller
             'detail_student_phone_no' => 'required|string|max:20',
             'detail_student_address' => 'required|string|max:255',
             'detail_student_photo' => 'nullable|image|max:2048',
+            'skills' => 'nullable|array',
+            'skills.*' => 'exists:skills,skill_id',
         ]);
 
         $student = DetailStudent::with('user')->where('user_id', auth()->id())->firstOrFail();
@@ -73,8 +80,29 @@ class StudentController extends Controller
             'detail_student_address' => $request->detail_student_address,
         ]);
 
+        $selectedSkills = $request->input('skills', []);
+
+        DB::transaction(function () use ($student, $selectedSkills) {
+            StudentSkill::where('detail_student_id', $student->detail_student_id)->delete();
+
+            $newSkills = [];
+            foreach ($selectedSkills as $skillId) {
+                $newSkills[] = [
+                    'detail_student_id' => $student->detail_student_id,
+                    'skill_id' => $skillId,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ];
+            }
+            if (!empty($newSkills)) {
+                StudentSkill::insert($newSkills);
+            }
+        });
+
         return redirect()->back()->with('success', 'Profile updated successfully.');
     }
+
+
 
     public function index()
     {
@@ -91,7 +119,6 @@ class StudentController extends Controller
 
         $upcomingCompetitions = Competition::where('competition_registration_deadline', '>', now())
             ->orderBy('competition_registration_deadline', 'asc')
-            ->limit(5)
             ->get();
 
         $verificationStatus = Achievement::where('user_id', $student->user_id)
@@ -128,6 +155,22 @@ class StudentController extends Controller
             ->limit(10)
             ->get();
 
+        $achievementVerifiedCount = Achievement::where('user_id', $student->user_id)
+            ->where('achievement_verified', 'verified')
+            ->count();
+
+        $achievementPendingCount = Achievement::where('user_id', $student->user_id)
+            ->where('achievement_verified', 'pending')
+            ->count();
+
+        $achievementApprovedCount = Achievement::where('user_id', $student->user_id)
+            ->where('achievement_verified', 'approved')
+            ->count();
+
+        $achievementRejectedCount = Achievement::where('user_id', $student->user_id)
+            ->where('achievement_verified', 'rejected')
+            ->count();
+
         return view('student.dashboard', compact(
             'student',
             'achievementCount',
@@ -137,7 +180,11 @@ class StudentController extends Controller
             'achievementStats',
             'achievementTrendYears',
             'achievementTrendCounts',
-            'topStudents'
+            'topStudents',
+            'achievementVerifiedCount',
+            'achievementPendingCount',
+            'achievementApprovedCount',
+            'achievementRejectedCount'
         ));
     }
 }
