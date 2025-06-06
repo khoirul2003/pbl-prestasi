@@ -5,24 +5,33 @@
         <div class="card-body">
             <h4 class="card-title mb-4">Competition Requests</h4>
 
-            <div class="mb-3">
-                <a href="{{ route('admin.requests.index') }}"
-                    class="btn btn-sm {{ request('status') == null ? 'btn-primary' : 'btn-outline-primary' }}">
-                    <i class="bi bi-list"></i> All
-                </a>
-                <a href="{{ route('admin.requests.index', ['status' => 'pending']) }}"
-                    class="btn btn-sm {{ request('status') == 'pending' ? 'btn-primary' : 'btn-outline-primary' }}">
-                    <i class="bi bi-clock"></i> Pending
-                </a>
-                <a href="{{ route('admin.requests.index', ['status' => 'approved']) }}"
-                    class="btn btn-sm {{ request('status') == 'approved' ? 'btn-primary' : 'btn-outline-primary' }}">
-                    <i class="bi bi-check-circle"></i> Approved
-                </a>
-                <a href="{{ route('admin.requests.index', ['status' => 'rejected']) }}"
-                    class="btn btn-sm {{ request('status') == 'rejected' ? 'btn-primary' : 'btn-outline-primary' }}">
-                    <i class="bi bi-x-circle"></i> Rejected
-                </a>
-            </div>
+            {{-- Filter Tabs --}}
+            <ul class="nav nav-tabs mb-4">
+                <li class="nav-item">
+                    <a class="nav-link {{ request('status') == null ? 'active' : '' }}"
+                        href="{{ route('admin.requests.index') }}">
+                        <i class="bi bi-list"></i> All
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ request('status') == 'pending' ? 'active' : '' }}"
+                        href="{{ route('admin.requests.index', ['status' => 'pending']) }}">
+                        <i class="bi bi-clock"></i> Pending
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ request('status') == 'approved' ? 'active' : '' }}"
+                        href="{{ route('admin.requests.index', ['status' => 'approved']) }}">
+                        <i class="bi bi-check-circle"></i> Approved
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ request('status') == 'rejected' ? 'active' : '' }}"
+                        href="{{ route('admin.requests.index', ['status' => 'rejected']) }}">
+                        <i class="bi bi-x-circle"></i> Rejected
+                    </a>
+                </li>
+            </ul>
 
             <div class="table-responsive">
                 <table class="table table-hover align-middle">
@@ -71,8 +80,7 @@
                                         <i class="bi bi-eye"></i> Show
                                     </button>
 
-
-                                    <!-- Modal Detail -->
+                                    {{-- Modal Detail --}}
                                     <div class="modal fade" id="detailModal{{ $requestItem->competition->competition_id }}"
                                         tabindex="-1"
                                         aria-labelledby="detailModalLabel{{ $requestItem->competition->competition_id }}"
@@ -121,10 +129,8 @@
                                         </div>
                                     </div>
 
-
-                                    <!-- Modal PDF Viewer -->
+                                    {{-- Modal PDF --}}
                                     @if ($requestItem->competition->competition_document)
-
                                         <div class="modal fade" id="pdfModal{{ $requestItem->request_id }}" tabindex="-1"
                                             aria-labelledby="pdfModalLabel{{ $requestItem->request_id }}"
                                             aria-hidden="true">
@@ -140,16 +146,14 @@
                                                             data-bs-dismiss="modal" aria-label="Close"></button>
                                                     </div>
                                                     <div class="modal-body p-0">
-                                                        <div
-                                                            class="d-flex justify-content-between align-items-center p-3 bg-light border-bottom">
+                                                        <div class="d-flex justify-content-between align-items-center p-3 bg-light border-bottom">
                                                             <small class="text-muted">
                                                                 Document for:
                                                                 <strong>{{ $requestItem->competition->competition_tittle }}</strong>
                                                             </small>
                                                             <div>
                                                                 <a href="{{ asset($requestItem->competition->competition_document) }}"
-                                                                    target="_blank"
-                                                                    class="btn btn-outline-primary btn-sm me-2">
+                                                                    target="_blank" class="btn btn-outline-primary btn-sm me-2">
                                                                     <i class="bi bi-box-arrow-up-right"></i> Open in New Tab
                                                                 </a>
                                                                 <a href="{{ asset($requestItem->competition->competition_document) }}"
@@ -159,22 +163,17 @@
                                                             </div>
                                                         </div>
                                                         <div style="height: 75vh;">
-                                                            <iframe
-                                                                src="{{ asset($requestItem->competition->competition_document) }}"
-                                                                width="100%" height="100%" style="border: none;"
-                                                                title="PDF Document">
+                                                            <iframe src="{{ asset($requestItem->competition->competition_document) }}"
+                                                                width="100%" height="100%" style="border: none;" title="PDF Document">
                                                                 <p>Your browser does not support PDFs.
                                                                     <a href="{{ asset($requestItem->competition->competition_document) }}"
-                                                                        target="_blank">
-                                                                        Click here to download the PDF
-                                                                    </a>
+                                                                        target="_blank">Click here to download the PDF</a>
                                                                 </p>
                                                             </iframe>
                                                         </div>
                                                     </div>
                                                     <div class="modal-footer">
-                                                        <button class="btn btn-secondary"
-                                                            data-bs-dismiss="modal">Close</button>
+                                                        <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                                     </div>
                                                 </div>
                                             </div>

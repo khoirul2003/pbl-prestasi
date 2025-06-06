@@ -61,7 +61,7 @@
                             <div class="col-sm-4 text-muted">Address</div>
                             <div class="col-sm-8">{{ $student->detail_student_address }}</div>
                         </div>
-                        
+
                         <div class="row mb-3">
                             <div class="col-sm-4 text-muted">Study Program</div>
                             <div class="col-sm-8">{{ $student->studyProgram->study_program_name ?? '-' }}</div>
@@ -78,8 +78,7 @@
                             <div class="row mb-4">
                                 <div class="col-sm-4 text-muted">Latest Semester</div>
                                 <div class="col-sm-8">
-                                    Semester {{ $semesterCount }} -
-                                    {{ $latestPeriod->period_name }}
+                                    Semester {{ $semesterCount }} - {{ $latestPeriod->period_name }}
                                     ({{ \Carbon\Carbon::parse($latestPeriod->start_date)->format('M Y') }} -
                                     {{ \Carbon\Carbon::parse($latestPeriod->end_date)->format('M Y') }})
                                 </div>
@@ -87,7 +86,8 @@
                         @endif
 
                         <div class="text-end">
-                            <button class="btn btn-outline-primary rounded-pill px-4" data-bs-toggle="modal" data-bs-target="#editProfileModal">
+                            <button class="btn btn-outline-primary rounded-pill px-4" data-bs-toggle="modal"
+                                data-bs-target="#editProfileModal">
                                 Edit Profile
                             </button>
                         </div>
@@ -99,53 +99,87 @@
     </div>
 
     <!-- Edit Profile Modal -->
-<div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-      <form action="{{ route('student.profile.update') }}" method="POST" enctype="multipart/form-data" class="modal-content">
-        @csrf
-        <div class="modal-header">
-          <h5 class="modal-title" id="editProfileModalLabel">Edit Profile</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    <!-- Edit Profile Modal -->
+    <div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl"> <!-- diperbesar ke xl -->
+            <form action="{{ route('student.profile.update') }}" method="POST" enctype="multipart/form-data"
+                class="modal-content">
+                @csrf
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editProfileModalLabel">Edit Profile</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Name</label>
+                            <input type="text" name="user_name" class="form-control"
+                                value="{{ $student->user->user_name }}" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Email</label>
+                            <input type="email" name="detail_student_email" class="form-control"
+                                value="{{ $student->detail_student_email }}" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Gender</label>
+                            <select name="detail_student_gender" class="form-select" required>
+                                <option value="Male" {{ $student->detail_student_gender == 'Male' ? 'selected' : '' }}>
+                                    Male</option>
+                                <option value="Female" {{ $student->detail_student_gender == 'Female' ? 'selected' : '' }}>
+                                    Female</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Date of Birth</label>
+                            <input type="date" name="detail_student_dob" class="form-control"
+                                value="{{ $student->detail_student_dob }}" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Phone</label>
+                            <input type="text" name="detail_student_phone_no" class="form-control"
+                                value="{{ $student->detail_student_phone_no }}" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Address</label>
+                            <input type="text" name="detail_student_address" class="form-control"
+                                value="{{ $student->detail_student_address }}" required>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Photo</label>
+                            <input type="file" name="detail_student_photo" class="form-control">
+                        </div>
+
+                        <hr class="my-3" />
+
+                        <div class="col-12">
+                            <label class="form-label fw-semibold">Skills</label>
+                            <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-2">
+                                @foreach ($allSkills as $skill)
+                                    <div class="col">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox"
+                                                value="{{ $skill->skill_id }}" id="skill{{ $skill->skill_id }}"
+                                                name="skills[]"
+                                                {{ $student->studentSkills->pluck('skill_id')->contains($skill->skill_id) ? 'checked' : '' }}>
+                                            <label class="form-check-label" for="skill{{ $skill->skill_id }}">
+                                                {{ $skill->skill_name }}
+                                            </label>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
         </div>
-        <div class="modal-body row g-3">
-          <div class="col-md-6">
-            <label class="form-label">Name</label>
-            <input type="text" name="user_name" class="form-control" value="{{ $student->user->user_name }}" required>
-          </div>
-          <div class="col-md-6">
-            <label class="form-label">Email</label>
-            <input type="email" name="detail_student_email" class="form-control" value="{{ $student->detail_student_email }}" required>
-          </div>
-          <div class="col-md-6">
-            <label class="form-label">Gender</label>
-            <select name="detail_student_gender" class="form-select" required>
-              <option value="Male" {{ $student->detail_student_gender == 'Male' ? 'selected' : '' }}>Male</option>
-              <option value="Female" {{ $student->detail_student_gender == 'Female' ? 'selected' : '' }}>Female</option>
-            </select>
-          </div>
-          <div class="col-md-6">
-            <label class="form-label">Date of Birth</label>
-            <input type="date" name="detail_student_dob" class="form-control" value="{{ $student->detail_student_dob }}" required>
-          </div>
-          <div class="col-md-6">
-            <label class="form-label">Phone</label>
-            <input type="text" name="detail_student_phone_no" class="form-control" value="{{ $student->detail_student_phone_no }}" required>
-          </div>
-          <div class="col-md-6">
-            <label class="form-label">Address</label>
-            <input type="text" name="detail_student_address" class="form-control" value="{{ $student->detail_student_address }}" required>
-          </div>
-          <div class="col-12">
-            <label class="form-label">Photo</label>
-            <input type="file" name="detail_student_photo" class="form-control">
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-          <button type="submit" class="btn btn-primary">Save Changes</button>
-        </div>
-      </form>
     </div>
-  </div>
+
 
 @endsection

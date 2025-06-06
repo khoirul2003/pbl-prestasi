@@ -1,0 +1,8 @@
+.active-menu {
+    background-color: #0d6efd !important; /* Ganti sesuai tema */
+    color: #fff !important;
+    font-weight: bold;
+}
+.active-menu i {
+    color: #fff !important;
+}

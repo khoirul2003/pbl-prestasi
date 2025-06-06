@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\MooraExport;
+use App\Exports\MooraSingleSheetExport;
 use App\Models\Achievement;
 use App\Models\PreUniversityAchievement;
 use App\Models\StudentPeriod;
@@ -13,6 +15,7 @@ use App\Models\RecommendationResult;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 
 class RecommendationController extends Controller
 {
@@ -42,118 +45,148 @@ class RecommendationController extends Controller
         }
 
         $decisionMatrix = [];
+        $levelMapping = [
+            'regional' => 1,
+            'nasional' => 2,
+            'internasional' => 3
+        ];
 
         foreach ($students as $student) {
             $detailStudent = $student->detailStudent;
 
+            // Achievement calculations
             $jumlahPrestasi = Achievement::where('user_id', $student->user_id)
-                ->where('category_id', $categoryId)
-                ->count();
+                ->where('category_id', $categoryId)->count();
 
+            // Ensure no 0 value for jumlahPrestasi (Benefit)
+            $jumlahPrestasi = $jumlahPrestasi == 0 ? 1 : $jumlahPrestasi;
+            $benefitPrestasi = $jumlahPrestasi * 2;  // Benefit calculation
+
+            // Approved achievements count
             $jumlahPrestasiDisetujui = Achievement::where('user_id', $student->user_id)
                 ->where('category_id', $categoryId)
-                ->where('achievement_verified', 'approved')
-                ->count();
+                ->where('achievement_verified', 'approved')->count();
 
-            $levelMapping = [
-                'regional' => 1,
-                'nasional' => 2,
-                'internasional' => 3
-            ];
+            // Ensure no 0 value for jumlahPrestasiDisetujui (Benefit)
+            $jumlahPrestasiDisetujui = $jumlahPrestasiDisetujui == 0 ? 1 : $jumlahPrestasiDisetujui;
 
+            // Level calculation for achievements
             $maxLevelAchievement = Achievement::where('user_id', $student->user_id)
                 ->where('category_id', $categoryId)
                 ->where('achievement_verified', 'approved')
                 ->whereIn('achievement_level', array_keys($levelMapping))
                 ->orderByRaw("CASE achievement_level
-                    WHEN 'internasional' THEN 3
-                    WHEN 'nasional' THEN 2
-                    WHEN 'regional' THEN 1
-                    ELSE 0 END DESC")
+            WHEN 'internasional' THEN 3
+            WHEN 'nasional' THEN 2
+            WHEN 'regional' THEN 1
+            ELSE 0 END DESC")
                 ->first();
 
-            $maxLevel = $maxLevelAchievement ? $levelMapping[$maxLevelAchievement->achievement_level] : 0;
+            $maxLevel = $maxLevelAchievement && $maxLevelAchievement->achievement_level
+                ? $levelMapping[$maxLevelAchievement->achievement_level]
+                : 0;
 
-            $bestRanking = Achievement::where('user_id', $student->user_id)
+            // Ensure no 0 value for maxLevel (Benefit)
+            $maxLevel = $maxLevel == 0 ? 1 : $maxLevel;
+
+            // Ranking calculation
+            $bestRankingQuery = Achievement::where('user_id', $student->user_id)
                 ->where('category_id', $categoryId)
                 ->where('achievement_verified', 'approved')
                 ->whereNotNull('achievement_ranking')
-                ->where('achievement_ranking', '>', 0)
-                ->min('achievement_ranking') ?? 6;
+                ->where('achievement_ranking', '>', 0);
+
+            $bestRanking = $bestRankingQuery->exists()
+                ? $bestRankingQuery->min('achievement_ranking')
+                : 0;
+
+            $bestRanking = $bestRanking == 0 ? 8 : $bestRanking;
 
             $ipk = StudentPeriod::where('detail_student_id', $detailStudent->detail_student_id)
                 ->orderByDesc('period_id')
                 ->value('ipk') ?? 0;
 
+            $ipk = $ipk == 0 ? 1 : $ipk;
+
             $skillSesuaiKategori = StudentSkill::where('detail_student_id', $detailStudent->detail_student_id)
                 ->whereHas('skill', function ($query) use ($categoryId) {
                     $query->where('category_id', $categoryId);
-                })
-                ->count();
+                })->count();
 
-            $totalSkill = StudentSkill::where('detail_student_id', $detailStudent->detail_student_id)
-                ->count();
+            $skillSesuaiKategori = $skillSesuaiKategori == 0 ? 1 : $skillSesuaiKategori;
 
-            $latestPeriodId = StudentPeriod::where('detail_student_id', $detailStudent->detail_student_id)
+            $totalSkill = StudentSkill::where('detail_student_id', $detailStudent->detail_student_id)->count();
+
+            $totalSkill = $totalSkill == 0 ? 1 : $totalSkill;
+
+            $semester = StudentPeriod::where('detail_student_id', $detailStudent->detail_student_id)
                 ->max('period_id') ?? 1;
 
-            $preUniJumlah = PreUniversityAchievement::where('user_id', $student->user_id)
-                ->where('category_id', $categoryId)
-                ->count();
+            $semester = $semester == 0 ? 1 : $semester;
 
-            $preUniBestRank = PreUniversityAchievement::where('user_id', $student->user_id)
+            $preUniJumlah = PreUniversityAchievement::where('user_id', $student->user_id)
+                ->where('category_id', $categoryId)->count();
+
+            $preUniJumlah = $preUniJumlah == 0 ? 1 : $preUniJumlah;
+
+            $preUniBestRankQuery = PreUniversityAchievement::where('user_id', $student->user_id)
                 ->where('category_id', $categoryId)
                 ->whereNotNull('pre_university_achievement_ranking')
-                ->where('pre_university_achievement_ranking', '>', 0)
-                ->min('pre_university_achievement_ranking') ?? 6;
+                ->where('pre_university_achievement_ranking', '>', 0);
+
+            $preUniBestRank = $preUniBestRankQuery->exists()
+                ? $preUniBestRankQuery->min('pre_university_achievement_ranking')
+                : 0;
+
+            $preUniBestRank = $preUniBestRank == 0 ? 8 : $preUniBestRank;
 
             $maxLevelPreUni = PreUniversityAchievement::where('user_id', $student->user_id)
                 ->where('category_id', $categoryId)
                 ->whereIn('pre_university_achievement_level', array_keys($levelMapping))
                 ->orderByRaw("CASE pre_university_achievement_level
-                    WHEN 'internasional' THEN 3
-                    WHEN 'nasional' THEN 2
-                    WHEN 'regional' THEN 1
-                    ELSE 0 END DESC")
+            WHEN 'internasional' THEN 3
+            WHEN 'nasional' THEN 2
+            WHEN 'regional' THEN 1
+            ELSE 0 END DESC")
                 ->first();
 
-            $preUniMaxLevel = $maxLevelPreUni ? $levelMapping[$maxLevelPreUni->pre_university_achievement_level] : 0;
+            $preUniMaxLevel = $maxLevelPreUni && $maxLevelPreUni->pre_university_achievement_level
+                ? $levelMapping[$maxLevelPreUni->pre_university_achievement_level]
+                : 0;
 
+            // Ensure no 0 value for preUniMaxLevel (Benefit)
+            $preUniMaxLevel = $preUniMaxLevel == 0 ? 1 : $preUniMaxLevel;
+
+            // Add all data to decision matrix
             $decisionMatrix[] = [
                 'student' => $student,
-                'jumlah_prestasi' => $jumlahPrestasi,
-                'jumlah_prestasi_disetujui' => $jumlahPrestasiDisetujui,
-                'level_kompetisi' => $maxLevel,
-                'peringkat_kompetisi' => $bestRanking,
-                'ipk' => (float) $ipk,
-                'skill_sesuai_kategori' => $skillSesuaiKategori,
-                'total_skill' => $totalSkill,
-                'semester' => $latestPeriodId,
-                'pre_uni_jumlah' => $preUniJumlah,
-                'pre_uni_peringkat' => $preUniBestRank,
-                'pre_uni_level' => $preUniMaxLevel,
+                'Name' => $student->user_name,
+                'Total Achievements' => $benefitPrestasi,  // Updated to benefit
+                'Approved Achievements' => $jumlahPrestasiDisetujui,
+                'Level of Achievements' => $maxLevel,
+                'Best Ranking' => $bestRanking,  // Updated to cost with +2 rule if no ranking
+                'GPA' => (float) $ipk,
+                'Category Skills' => $skillSesuaiKategori,
+                'Total Skills' => $totalSkill,
+                'Semester' => $semester,
+                'Pre-University Achievements' => $preUniJumlah,
+                'Pre-University Best Rank' => $preUniBestRank,
+                'Pre-University Level' => $preUniMaxLevel,
             ];
         }
 
-        if (empty($decisionMatrix)) {
-            return view('admin.recommendations.show', [
-                'competition' => $competition,
-                'results' => []
-            ]);
-        }
-
         $weights = [
-            'jumlah_prestasi' => 0.1,
-            'jumlah_prestasi_disetujui' => 0.15,
-            'level_kompetisi' => 0.15,
-            'peringkat_kompetisi' => 0.15,
-            'ipk' => 0.1,
-            'skill_sesuai_kategori' => 0.18,
-            'total_skill' => 0.05,
-            'semester' => 0.03,
-            'pre_uni_jumlah' => 0.03,
-            'pre_uni_peringkat' => 0.03,
-            'pre_uni_level' => 0.03,
+            'Total Achievements' => 0.1,
+            'Approved Achievements' => 0.15,
+            'Level of Achievements' => 0.15,
+            'Best Ranking' => 0.15,
+            'GPA' => 0.1,
+            'Category Skills' => 0.18,
+            'Total Skills' => 0.05,
+            'Semester' => 0.03,
+            'Pre-University Achievements' => 0.03,
+            'Pre-University Best Rank' => 0.03,
+            'Pre-University Level' => 0.03,
         ];
 
         $maxValues = [];
@@ -166,6 +199,7 @@ class RecommendationController extends Controller
         }
 
         $normalizedMatrix = [];
+
         foreach ($decisionMatrix as $row) {
             $normalized = [];
 
@@ -178,7 +212,7 @@ class RecommendationController extends Controller
                 if ($range == 0) {
                     $normalized[$key] = 0.5;
                 } else {
-                    if (in_array($key, ['peringkat_kompetisi', 'semester', 'pre_uni_peringkat'])) {
+                    if (in_array($key, ['Best Ranking', 'Semester', 'Pre-University Best Rank'])) {
                         $normalized[$key] = ($max - $val) / $range;
                     } else {
                         $normalized[$key] = ($val - $min) / $range;
@@ -194,6 +228,7 @@ class RecommendationController extends Controller
         }
 
         $results = [];
+
         foreach ($normalizedMatrix as $row) {
             $totalScore = 0;
 
@@ -210,20 +245,16 @@ class RecommendationController extends Controller
             ];
         }
 
-        usort($results, function ($a, $b) {
-            return $b['score'] <=> $a['score'];
-        });
+        usort($results, fn($a, $b) => $b['score'] <=> $a['score']);
 
         $topResults = array_slice($results, 0, 5);
 
         foreach ($topResults as $result) {
             $student = $result['student'];
 
-
             $matchingSupervisors = DetailSupervisor::whereHas('supervisorSkills.skill', function ($query) use ($categoryId) {
                 $query->where('category_id', $categoryId);
             })->get();
-
 
             $selectedSupervisor = $matchingSupervisors->isNotEmpty()
                 ? $matchingSupervisors->random()
@@ -254,8 +285,207 @@ class RecommendationController extends Controller
             ['path' => request()->url(), 'query' => request()->query()]
         );
 
-
-
         return view('admin.recommendations.show', compact('competition'))->with('results', $paginator);
+    }
+
+    private function calculateMoora($competition)
+    {
+        $categoryId = $competition->category_id;
+
+        $students = User::where('role_id', 3)
+            ->whereHas('detailStudent')
+            ->with('detailStudent')
+            ->get();
+
+        if ($students->isEmpty()) {
+            return [
+                'decisionMatrix' => [],
+                'normalizedMatrix' => [],
+                'results' => [],
+            ];
+        }
+
+        $decisionMatrix = [];
+        $levelMapping = ['regional' => 1, 'nasional' => 2, 'internasional' => 3];
+
+        foreach ($students as $student) {
+            $detailStudent = $student->detailStudent;
+
+            $jumlahPrestasi = Achievement::where('user_id', $student->user_id)
+                ->where('category_id', $categoryId)->count();
+            $jumlahPrestasi = $jumlahPrestasi == 0 ? 1 : $jumlahPrestasi;
+            $benefitPrestasi = $jumlahPrestasi * 2;
+
+            $jumlahPrestasiDisetujui = Achievement::where('user_id', $student->user_id)
+                ->where('category_id', $categoryId)
+                ->where('achievement_verified', 'approved')->count();
+            $jumlahPrestasiDisetujui = $jumlahPrestasiDisetujui == 0 ? 1 : $jumlahPrestasiDisetujui;
+
+            $maxLevelAchievement = Achievement::where('user_id', $student->user_id)
+                ->where('category_id', $categoryId)
+                ->where('achievement_verified', 'approved')
+                ->whereIn('achievement_level', array_keys($levelMapping))
+                ->orderByRaw("CASE achievement_level
+                WHEN 'internasional' THEN 3
+                WHEN 'nasional' THEN 2
+                WHEN 'regional' THEN 1
+                ELSE 0 END DESC")->first();
+            $maxLevel = $maxLevelAchievement && $maxLevelAchievement->achievement_level
+                ? $levelMapping[$maxLevelAchievement->achievement_level]
+                : 1;
+
+            $bestRankingQuery = Achievement::where('user_id', $student->user_id)
+                ->where('category_id', $categoryId)
+                ->where('achievement_verified', 'approved')
+                ->whereNotNull('achievement_ranking')
+                ->where('achievement_ranking', '>', 0);
+            $bestRanking = $bestRankingQuery->exists()
+                ? $bestRankingQuery->min('achievement_ranking')
+                : 8;
+
+            $ipk = StudentPeriod::where('detail_student_id', $detailStudent->detail_student_id)
+                ->orderByDesc('period_id')->value('ipk') ?? 1;
+
+            $skillSesuaiKategori = StudentSkill::where('detail_student_id', $detailStudent->detail_student_id)
+                ->whereHas('skill', function ($query) use ($categoryId) {
+                    $query->where('category_id', $categoryId);
+                })->count();
+            $skillSesuaiKategori = $skillSesuaiKategori == 0 ? 1 : $skillSesuaiKategori;
+
+            $totalSkill = StudentSkill::where('detail_student_id', $detailStudent->detail_student_id)->count();
+            $totalSkill = $totalSkill == 0 ? 1 : $totalSkill;
+
+            $semester = StudentPeriod::where('detail_student_id', $detailStudent->detail_student_id)
+                ->max('period_id') ?? 1;
+            $semester = $semester == 0 ? 1 : $semester;
+
+            $preUniJumlah = PreUniversityAchievement::where('user_id', $student->user_id)
+                ->where('category_id', $categoryId)->count();
+            $preUniJumlah = $preUniJumlah == 0 ? 1 : $preUniJumlah;
+
+            $preUniBestRankQuery = PreUniversityAchievement::where('user_id', $student->user_id)
+                ->where('category_id', $categoryId)
+                ->whereNotNull('pre_university_achievement_ranking')
+                ->where('pre_university_achievement_ranking', '>', 0);
+            $preUniBestRank = $preUniBestRankQuery->exists()
+                ? $preUniBestRankQuery->min('pre_university_achievement_ranking')
+                : 8;
+
+            $maxLevelPreUni = PreUniversityAchievement::where('user_id', $student->user_id)
+                ->where('category_id', $categoryId)
+                ->whereIn('pre_university_achievement_level', array_keys($levelMapping))
+                ->orderByRaw("CASE pre_university_achievement_level
+                WHEN 'internasional' THEN 3
+                WHEN 'nasional' THEN 2
+                WHEN 'regional' THEN 1
+                ELSE 0 END DESC")->first();
+            $preUniMaxLevel = $maxLevelPreUni && $maxLevelPreUni->pre_university_achievement_level
+                ? $levelMapping[$maxLevelPreUni->pre_university_achievement_level]
+                : 1;
+
+            $decisionMatrix[] = [
+                'student' => $student,
+                'Name' => $student->user_name,
+                'Total Achievements' => $benefitPrestasi,
+                'Approved Achievements' => $jumlahPrestasiDisetujui,
+                'Level of Achievements' => $maxLevel,
+                'Best Ranking' => $bestRanking,
+                'GPA' => (float) $ipk,
+                'Category Skills' => $skillSesuaiKategori,
+                'Total Skills' => $totalSkill,
+                'Semester' => $semester,
+                'Pre-University Achievements' => $preUniJumlah,
+                'Pre-University Best Rank' => $preUniBestRank,
+                'Pre-University Level' => $preUniMaxLevel,
+            ];
+        }
+
+        $weights = [
+            'Total Achievements' => 0.1,
+            'Approved Achievements' => 0.15,
+            'Level of Achievements' => 0.15,
+            'Best Ranking' => 0.15,
+            'GPA' => 0.1,
+            'Category Skills' => 0.18,
+            'Total Skills' => 0.05,
+            'Semester' => 0.03,
+            'Pre-University Achievements' => 0.03,
+            'Pre-University Best Rank' => 0.03,
+            'Pre-University Level' => 0.03,
+        ];
+
+        $maxValues = $minValues = [];
+        foreach (array_keys($weights) as $key) {
+            $values = array_column($decisionMatrix, $key);
+            $maxValues[$key] = max($values);
+            $minValues[$key] = min($values);
+        }
+
+        $normalizedMatrix = [];
+        foreach ($decisionMatrix as $row) {
+            $normalized = [];
+            foreach ($weights as $key => $weight) {
+                $val = $row[$key];
+                $max = $maxValues[$key];
+                $min = $minValues[$key];
+                $range = $max - $min;
+
+                if ($range == 0) {
+                    $normalized[$key] = 0.5;
+                } else {
+                    if (in_array($key, ['Best Ranking', 'Semester', 'Pre-University Best Rank'])) {
+                        $normalized[$key] = ($max - $val) / $range;
+                    } else {
+                        $normalized[$key] = ($val - $min) / $range;
+                    }
+                }
+            }
+
+            $normalizedMatrix[] = [
+                'student' => $row['student'],
+                'normalized' => $normalized,
+                'raw_data' => $row,
+            ];
+        }
+
+        $results = [];
+        foreach ($normalizedMatrix as $row) {
+            $totalScore = 0;
+            foreach ($weights as $key => $weight) {
+                $totalScore += $row['normalized'][$key] * $weight;
+            }
+            $results[] = [
+                'student' => $row['student'],
+                'score' => round($totalScore, 4),
+                'raw_data' => $row['raw_data'],
+                'normalized_data' => $row['normalized'],
+            ];
+        }
+
+        usort($results, fn($a, $b) => $b['score'] <=> $a['score']);
+
+        return [
+            'decisionMatrix' => $decisionMatrix,
+            'normalizedMatrix' => $normalizedMatrix,
+            'results' => $results,
+        ];
+    }
+
+    public function exportToExcel($competitionId)
+    {
+        $competition = Competition::findOrFail($competitionId);
+
+
+        $resultsData = $this->calculateMoora($competition);
+
+        return Excel::download(
+            new MooraExport(
+                $competition,
+                $resultsData['decisionMatrix'],
+                $resultsData['normalizedMatrix'],
+                $resultsData['results']
+            ),
+            'moora_step_by_step.xlsx'
+        );
     }
 }

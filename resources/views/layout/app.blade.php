@@ -25,6 +25,8 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
         <style>
+
+
             .dashboard-card {
                 border-radius: 1rem;
                 box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
@@ -88,36 +90,40 @@
     <body>
         <div aria-live="polite" aria-atomic="true" class="position-relative">
             <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1100;">
-                @if(session('success') || session('error'))
+                @if (session('success') || session('error'))
                     @php
                         $alertType = session('success') ? 'success' : 'danger';
                         $alertMessage = session('success') ?? session('error');
                     @endphp
-                    <div class="toast align-items-center text-white bg-{{ $alertType }} border-0" role="alert" aria-live="assertive" aria-atomic="true" id="liveToast">
+                    <div class="toast align-items-center text-white bg-{{ $alertType }} border-0" role="alert"
+                        aria-live="assertive" aria-atomic="true" id="liveToast">
                         <div class="d-flex">
                             <div class="toast-body">
                                 @switch($alertType)
                                     @case('success')
                                         <strong>Success:</strong> {{ $alertMessage }}
-                                        @break
+                                    @break
+
                                     @case('danger')
                                         <strong>Error:</strong> {{ $alertMessage }}
-                                        @break
+                                    @break
+
                                     @default
                                         {{ $alertMessage }}
                                 @endswitch
                             </div>
-                            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                                aria-label="Close"></button>
                         </div>
                     </div>
                 @endif
             </div>
         </div>
 
-        <!-- Header -->
         @include('components.header')
 
-        <div class="container-fluid page-body-wrapper">
+        <div class="page-body-wrapper">
+
             @include('components.sidebar')
             <div class="main-panel">
                 <div class="content-wrapper">
@@ -133,7 +139,7 @@
 
         @stack('scripts')
         <script>
-            document.addEventListener('DOMContentLoaded', function () {
+            document.addEventListener('DOMContentLoaded', function() {
                 var toastEl = document.getElementById('liveToast');
                 if (toastEl) {
                     var toast = new bootstrap.Toast(toastEl);

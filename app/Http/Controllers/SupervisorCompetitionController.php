@@ -31,13 +31,18 @@ class SupervisorCompetitionController extends Controller
             'competition_tittle' => 'required',
             'competition_description' => 'required',
             'competition_organizer' => 'required',
-            'competition_level' => 'required',
+            'competition_level' => 'required', 
+            'competition_registration_start' => 'required|date',
             'competition_registration_deadline' => 'required|date',
             'competition_registion_link' => 'nullable|url',
             'competition_document' => 'required|file|mimes:pdf,docx|max:2048',
         ]);
 
-        $documentPath = $request->file('competition_document')->store('documents', 'public');
+        $document = $request->file('competition_document');
+        $fileName = time() . '_' . $document->getClientOriginalName();
+        $document->move(public_path('documents/competitions'), $fileName);
+        $documentPath = 'documents/competitions/' . $fileName;
+
 
         $competition = Competition::create([
             'category_id' => $request->category_id,
@@ -45,6 +50,7 @@ class SupervisorCompetitionController extends Controller
             'competition_description' => $request->competition_description,
             'competition_organizer' => $request->competition_organizer,
             'competition_level' => $request->competition_level,
+            'competition_registration_start' => $request->competition_registration_start,
             'competition_registration_deadline' => $request->competition_registration_deadline,
             'competition_registion_link' => $request->competition_registion_link,
             'competition_document' => $documentPath,
@@ -57,5 +63,52 @@ class SupervisorCompetitionController extends Controller
         ]);
 
         return redirect()->route('supervisor.competitions.index')->with('success', 'Request submitted successfully.');
+    }
+
+    public function edit($id)
+    {
+        $request = CompetitionRequest::with('competition')
+            ->where('user_id', Auth::id())
+            ->where('competition_id', $id)
+            ->firstOrFail();
+
+        $categories = \App\Models\Category::all();
+        return view('supervisor.competitions.edit', compact('request', 'categories'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'competition_tittle' => 'required',
+            'competition_description' => 'required',
+            'competition_organizer' => 'required',
+            'competition_level' => 'required',
+            'competition_registration_deadline' => 'required|date',
+            'competition_registion_link' => 'nullable|url',
+        ]);
+
+        $competition = Competition::findOrFail($id);
+
+        $competition->update([
+            'competition_tittle' => $request->competition_tittle,
+            'competition_description' => $request->competition_description,
+            'competition_organizer' => $request->competition_organizer,
+            'competition_level' => $request->competition_level,
+            'competition_registration_deadline' => $request->competition_registration_deadline,
+            'competition_registion_link' => $request->competition_registion_link,
+        ]);
+
+        return redirect()->route('supervisor.competitions.index')->with('success', 'Competition updated successfully.');
+    }
+
+    public function destroy($id)
+    {
+        $request = CompetitionRequest::where('competition_id', $id)->where('user_id', Auth::id())->firstOrFail();
+        $request->delete();
+
+        $competition = Competition::findOrFail($id);
+        $competition->delete();
+
+        return redirect()->route('supervisor.competitions.index')->with('success', 'Competition request deleted.');
     }
 }
