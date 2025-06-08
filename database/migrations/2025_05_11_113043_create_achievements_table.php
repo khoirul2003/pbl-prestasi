@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    
+
     public function up(): void
     {
         Schema::create('achievements', function (Blueprint $table) {
@@ -19,6 +19,7 @@ return new class extends Migration
             $table->enum('achievement_level', ['regional', 'nasional', 'internasional']);
             $table->string('achievement_document', 255)->nullable();
             $table->enum('achievement_verified', ['approved', 'rejected', 'pending']);
+            $table->text('achievement_reject_description')->nullable();
             $table->timestamps();
 
             $table->foreign('user_id')->references('user_id')->on('users')->onDelete('cascade');

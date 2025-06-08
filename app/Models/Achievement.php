@@ -20,6 +20,7 @@ class Achievement extends Model
         'achievement_level',
         'achievement_document',
         'achievement_verified',
+        'achievement_reject_description'
     ];
 
     protected $primaryKey = 'achievement_id';

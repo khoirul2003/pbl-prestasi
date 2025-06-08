@@ -39,7 +39,7 @@
             <li class="nav-item"><a class="nav-link fs-6" href="{{ route('admin.recommendations.index') }}"><i
                 class="menu-icon mdi bi bi-lightbulb"></i><span class="menu-title">Recommendations</span></a>
     </li>
-    
+
             <li class="nav-item"><a class="nav-link fs-6" href="{{ route('categories.index') }}"><i
                         class="menu-icon mdi bi bi-tags"></i><span class="menu-title">Categories</span></a></li>
 
@@ -73,6 +73,12 @@
                     <span class="menu-title">Competition</span>
                 </a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link fs-6" href="{{ route('supervisor.recommendations.index') }}">
+                    <i class="menu-icon mdi bi bi-trophy"></i>
+                    <span class="menu-title">Recommendation</span>
+                </a>
+            </li>
         @endif
 
 
@@ -92,7 +98,7 @@
             </li>
 
             <li class="nav-item">
-                <a class="nav-link fs-6" href="{{ route('supervisor.competitions.index') }}">
+                <a class="nav-link fs-6" href="{{ route('student.competitions.index') }}">
                     <i class="menu-icon mdi bi bi-trophy"></i>
                     <span class="menu-title">Competition</span>
                 </a>

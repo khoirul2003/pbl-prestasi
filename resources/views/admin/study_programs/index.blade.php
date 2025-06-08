@@ -63,42 +63,18 @@
                         <td>{{ $study_program->departments->department_name }}</td>
                         <td>{{ $study_program->study_program_name }}</td>
                         <td>
-                            <!-- Show Button -->
-                            <button type="button" class="btn btn-info btn-rounded btn-sm text-white" data-bs-toggle="modal" data-bs-target="#showStudyProgramModal{{ $study_program->study_program_id }}">
-                                <i class="bi bi-eye"></i> Show
-                            </button>
 
                             <!-- Edit Button -->
-                            <button type="button" class="btn btn-warning btn-rounded btn-sm text-white" data-bs-toggle="modal" data-bs-target="#editStudyProgramModal{{ $study_program->study_program_id }}">
-                                <i class="bi bi-pencil-square"></i> Edit
+                            <button type="button" class="btn btn-warning btn-rounded btn-sm" data-bs-toggle="modal" data-bs-target="#editStudyProgramModal{{ $study_program->study_program_id }}">
+                                <i class="bi bi-pencil-square"></i>
                             </button>
 
                             <!-- Delete Button -->
                             <button type="button" class="btn btn-danger btn-rounded btn-sm" data-bs-toggle="modal" data-bs-target="#deleteStudyProgramModal{{ $study_program->study_program_id }}">
-                                <i class="bi bi-trash"></i> Delete
+                                <i class="bi bi-trash"></i>
                             </button>
                         </td>
                     </tr>
-
-                    <!-- Modal Show -->
-                    <div class="modal fade" id="showStudyProgramModal{{ $study_program->study_program_id }}" tabindex="-1" aria-labelledby="showStudyProgramLabel{{ $study_program->study_program_id }}" aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="showStudyProgramLabel{{ $study_program->study_program_id }}">Study Program Details</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <p><strong>ID:</strong> {{ $study_program->study_program_id }}</p>
-                                    <p><strong>Department:</strong> {{ $study_program->departments->department_name }}</p>
-                                    <p><strong>Study Program:</strong> {{ $study_program->study_program_name }}</p>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
 
                     <!-- Modal Edit -->
                     <div class="modal fade" id="editStudyProgramModal{{ $study_program->study_program_id }}" tabindex="-1" aria-labelledby="editStudyProgramLabel{{ $study_program->study_program_id }}" aria-hidden="true">

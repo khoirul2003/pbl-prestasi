@@ -62,14 +62,14 @@
                                 <td>{{ ucfirst($user->role->role_name) }}</td>
 
                                 <!-- Dynamic columns based on role -->
-                                @if ($user->role->role_name == 'Student')
+                                @if ($user->role->role_name == 'student')
                                     <td>{{ optional($user->detailStudent)->detail_student_nim }}</td>
                                     <td>{{ optional($user->detailStudent->studyProgram)->study_program_name ?? '-' }}</td>
-                                    <td>{{ $user->detailStudent->detail_student_email }}</td>
+                                    <td>{{ optional($user->detailStudent)->detail_student_email ?? '-' }}</td>
                                 @else
                                     <td>{{ optional($user->detailSupervisor)->detail_supervisor_nip }}</td>
                                     <td>{{ optional($user->detailSupervisor->department)->department_name ?? '-' }}</td>
-                                    <td>{{ $user->detailSupervisor->detail_supervisor_email }}</td>
+                                    <td>{{ optional($user->detailSupervisor)->detail_supervisor_email ?? '-' }}</td>
                                 @endif
 
 

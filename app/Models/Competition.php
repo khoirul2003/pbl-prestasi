@@ -19,7 +19,7 @@ class Competition extends Model
         'competition_level',
         'competition_registration_start',
         'competition_registration_deadline',
-        'competition_registion_link',
+        'competition_registration_link',
         'competition_document',
     ];
 

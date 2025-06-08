@@ -13,7 +13,6 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    // Index method to display the list of users (either students or supervisors)
     public function index(Request $request)
     {
         // Default to 'student' if no role is provided
@@ -22,17 +21,22 @@ class UserController extends Controller
         // Fetch users based on the role (student or supervisor)
         if ($role == 'student') {
             $users = User::with('detailStudent', 'role')
-                ->where('role_id', 3)  // Role ID for students is 3
+                ->whereHas('role', function ($query) {
+                    $query->where('role_name', 'student');  // Use role_name instead of role_id
+                })
                 ->paginate(10);
         } else {
             $users = User::with('detailSupervisor', 'role')
-                ->where('role_id', 2)  // Role ID for supervisors is 2
+                ->whereHas('role', function ($query) {
+                    $query->where('role_name', 'supervisor');  // Use role_name instead of role_id
+                })
                 ->paginate(10);
         }
 
         // Return the index view with the users and role
         return view('admin.users.index', compact('users', 'role'));
     }
+
 
     // Form to add a new user (either student or supervisor)
     public function create($role)
@@ -50,8 +54,8 @@ class UserController extends Controller
 
     public function store(Request $request, $role)
     {
-        // Determine the role ID based on the dynamic role parameter (student = 3, supervisor = 2)
-        $roleId = ($role == 'student') ? 3 : 2;
+        // Determine the role name dynamically
+        $roleName = ($role == 'student') ? 'student' : 'supervisor';
 
         // Validation rules for both students and supervisors
         $validationRules = [
@@ -70,7 +74,7 @@ class UserController extends Controller
         ];
 
         // Additional validation rules for students
-        if ($role == 'student') {
+        if ($roleName == 'student') {
             $validationRules = array_merge($validationRules, [
                 'study_program_id' => 'required|exists:study_programs,study_program_id',
                 'detail_student_nim' => 'required|string|unique:detail_students,detail_student_nim',
@@ -103,22 +107,24 @@ class UserController extends Controller
         try {
             // Create the user
             $user = User::create([
-                'role_id' => $roleId,
+                'role_name' => $roleName,  // Use role_name instead of role_id
                 'user_name' => $request->user_name,
                 'user_username' => $request->user_username,
                 'user_password' => Hash::make($request->user_password),
             ]);
 
             // Handle photo upload for student or supervisor
-            if ($role == 'student' && $request->hasFile('detail_student_photo')) {
+            if ($roleName == 'student' && $request->hasFile('detail_student_photo')) {
                 $photo = $request->file('detail_student_photo');
                 $photoPath = $photo->storeAs('photos/students', time() . '_' . $photo->getClientOriginalName(), 'public');
-            } elseif ($role == 'supervisor' && $request->hasFile('detail_supervisor_photo')) {
+            } elseif ($roleName == 'supervisor' && $request->hasFile('detail_supervisor_photo')) {
                 $photo = $request->file('detail_supervisor_photo');
                 $photoPath = $photo->storeAs('photos/supervisors', time() . '_' . $photo->getClientOriginalName(), 'public');
             }
 
-            if ($role == 'student') {
+            dd($photoPath);
+
+            if ($roleName == 'student') {
                 $dataDetail = $request->only([
                     'study_program_id',
                     'detail_student_nim',
@@ -129,6 +135,7 @@ class UserController extends Controller
                     'detail_student_email',
                 ]);
                 $dataDetail['user_id'] = $user->user_id;
+                dd($photoPath);
                 $dataDetail['detail_student_photo'] = $photoPath ?? null;
                 DetailStudent::create($dataDetail);
             } else {
@@ -148,8 +155,8 @@ class UserController extends Controller
 
             DB::commit();
 
-            return redirect()->route('admin.users.index', ['role' => $role])
-                ->with('success', $role == 'student' ? 'Student berhasil dibuat' : 'Supervisor berhasil dibuat');
+            return redirect()->route('admin.users.index', ['role' => $roleName])
+                ->with('success', $roleName == 'student' ? 'Student berhasil dibuat' : 'Supervisor berhasil dibuat');
         } catch (\Exception $e) {
             DB::rollBack();
             return back()->withErrors(['error' => 'Gagal menyimpan data: ' . $e->getMessage()])->withInput();
@@ -157,14 +164,15 @@ class UserController extends Controller
     }
 
 
-    public function edit($roleId, $id)
+
+    public function edit($roleName, $id)
     {
         $user = User::with(['detailStudent', 'detailSupervisor'])->findOrFail($id);
         $viewData = [
             'user' => $user
         ];
 
-        if ($roleId == 3) {
+        if ($roleName == 'student') {
             $viewData['studyPrograms'] = StudyProgram::all();
             return view('users.student.edit', $viewData);
         } else {
@@ -173,10 +181,14 @@ class UserController extends Controller
         }
     }
 
-    public function update(Request $request, $roleId, $id)
+
+    public function update(Request $request, $roleName, $id)
     {
+
+        // Ambil data user beserta detailnya
         $user = User::with(['detailStudent', 'detailSupervisor'])->findOrFail($id);
 
+        // Validasi untuk semua pengguna
         $validationRules = [
             'user_name' => 'required|string|max:255',
             'user_username' => "required|string|max:255|unique:users,user_username,{$id},user_id",
@@ -192,7 +204,10 @@ class UserController extends Controller
             ],
         ];
 
-        if ($roleId == 3) {
+
+
+        // Validasi untuk Student
+        if ($roleName == 'student') {
             $validationRules = array_merge($validationRules, [
                 'study_program_id' => 'required|exists:study_programs,study_program_id',
                 'detail_student_nim' => "required|string|unique:detail_students,detail_student_nim,{$user->detailStudent->detail_student_id},detail_student_id",
@@ -203,7 +218,7 @@ class UserController extends Controller
                 'detail_student_email' => "required|email|unique:detail_students,detail_student_email,{$user->detailStudent->detail_student_id},detail_student_id",
                 'detail_student_photo' => 'nullable|image|max:2048',
             ]);
-        } else {
+        } else {  // Supervisor
             $validationRules = array_merge($validationRules, [
                 'department_id' => 'required|exists:departments,department_id',
                 'detail_supervisor_nip' => "required|string|unique:detail_supervisors,detail_supervisor_nip,{$user->detailSupervisor->detail_supervisor_id},detail_supervisor_id",
@@ -215,21 +230,26 @@ class UserController extends Controller
             ]);
         }
 
+        // Validasi input
         $request->validate($validationRules);
 
+        // Mulai transaksi database
         DB::beginTransaction();
 
         try {
-
+            // Update data user
             $user->user_name = $request->user_name;
             $user->user_username = $request->user_username;
+
+            // Hanya update password jika diisi
             if ($request->filled('user_password')) {
                 $user->user_password = Hash::make($request->user_password);
             }
             $user->save();
 
-            if ($roleId == 3) {
-                $detail = $user->detailStudent;
+            // Update detail user berdasarkan role
+            if ($roleName == 'student') {  // Jika Student
+                $detail = $user->detailStudent ?? new DetailStudent();  // Jika tidak ada detailStudent, buat instance baru
                 $detail->study_program_id = $request->study_program_id;
                 $detail->detail_student_nim = $request->detail_student_nim;
                 $detail->detail_student_gender = $request->detail_student_gender;
@@ -238,15 +258,20 @@ class UserController extends Controller
                 $detail->detail_student_phone_no = $request->detail_student_phone_no;
                 $detail->detail_student_email = $request->detail_student_email;
 
+                // Jika ada foto, simpan foto baru
                 if ($request->hasFile('detail_student_photo')) {
                     $file = $request->file('detail_student_photo');
                     $filename = time() . '_' . $file->getClientOriginalName();
                     $file->move(public_path('photos/students'), $filename);
                     $detail->detail_student_photo = $filename;
                 }
+
+                // Debugging: Pastikan foto diterima
+                // dd($detail);
+
                 $detail->save();
-            } else {
-                $detail = $user->detailSupervisor;
+            } else {  // Supervisor
+                $detail = $user->detailSupervisor ?? new DetailSupervisor();  // Jika tidak ada detailSupervisor, buat instance baru
                 $detail->department_id = $request->department_id;
                 $detail->detail_supervisor_nip = $request->detail_supervisor_nip;
                 $detail->detail_supervisor_gender = $request->detail_supervisor_gender;
@@ -255,31 +280,34 @@ class UserController extends Controller
                 $detail->detail_supervisor_phone_no = $request->detail_supervisor_phone_no;
                 $detail->detail_supervisor_email = $request->detail_supervisor_email;
 
+                // Jika ada foto, simpan foto baru
                 if ($request->hasFile('detail_supervisor_photo')) {
                     $file = $request->file('detail_supervisor_photo');
                     $filename = time() . '_' . $file->getClientOriginalName();
                     $file->move(public_path('photos/supervisors'), $filename);
                     $detail->detail_supervisor_photo = $filename;
                 }
+
                 $detail->save();
             }
 
             DB::commit();
 
-            return redirect()->route($roleId == 3 ? 'admin.students.index' : 'admin.supervisors.index')
-                ->with('success', $roleId == 3 ? 'Student berhasil diperbarui' : 'Supervisor berhasil diperbarui');
+            // Redirect setelah berhasil
+            return redirect()->route($roleName == 'student' ? 'admin.students.index' : 'admin.supervisors.index')
+                ->with('success', $roleName == 'student' ? 'Student berhasil diperbarui' : 'Supervisor berhasil diperbarui');
         } catch (\Exception $e) {
             DB::rollBack();
             return back()->withErrors(['error' => 'Gagal memperbarui data: ' . $e->getMessage()])->withInput();
         }
     }
 
-    public function destroy($roleId, $id)
+    public function destroy($roleName, $id)
     {
         $user = User::findOrFail($id);
         $user->delete();
 
-        return redirect()->route($roleId == 3 ? 'admin.students.index' : 'admin.supervisors.index')
-            ->with('success', $roleId == 3 ? 'Student berhasil dihapus' : 'Supervisor berhasil dihapus');
+        return redirect()->route($roleName == 'student' ? 'admin.users.index' : 'admin.users.index')
+            ->with('success', $roleName == 'student' ? 'Student berhasil dihapus' : 'Supervisor berhasil dihapus');
     }
 }

@@ -10,7 +10,9 @@ use Illuminate\Support\Facades\Auth;
 
 class CompetitionController extends Controller
 {
-    // ADMIN METHODS - Competition Management
+    // ========================
+    // ADMIN METHODS
+    // ========================
 
     public function adminIndex(Request $request)
     {
@@ -18,26 +20,19 @@ class CompetitionController extends Controller
 
         $competitions = Competition::with(['category', 'competitionRequests'])
             ->when($status, function ($query) use ($status) {
-                return $query->whereHas('competitionRequests', function ($subQuery) use ($status) {
-                    $subQuery->where('request_verified', $status);
+                return $query->whereHas('competitionRequests', function ($q) use ($status) {
+                    $q->where('request_verified', $status);
                 });
             })
-            ->when($status == null, function ($query) {
-                return $query->whereHas('competitionRequests', function ($subQuery) {
-                    $subQuery->where('request_verified', 'approved');
-                })
-                    ->orWhereDoesntHave('competitionRequests');
+            ->when(is_null($status), function ($query) {
+                return $query->whereHas('competitionRequests', function ($q) {
+                    $q->where('request_verified', 'approved');
+                })->orWhereDoesntHave('competitionRequests');
             })
             ->paginate(10);
 
-        if ($request->ajax()) {
-            return view('admin.competitions._competitions_list', compact('competitions'));
-        }
-
         return view('admin.competitions.index', compact('competitions'));
     }
-
-
 
     public function adminCreate()
     {
@@ -82,29 +77,24 @@ class CompetitionController extends Controller
             'competition_document' => $documentPath
         ]));
 
-        return redirect()->route('admin.competitions.index')
-            ->with('success', 'Competition updated successfully.');
+        if ($request->ajax()) {
+            return response()->json(['success' => true, 'message' => 'Competition updated successfully.']);
+        }
+
+        return redirect()->route('admin.competitions.index')->with('success', 'Competition updated successfully.');
     }
 
-    public function adminDestroy($id)
-    {
-        $competition = Competition::findOrFail($id);
-        $competition->delete();
 
-        return redirect()->route('admin.competitions.index')
-            ->with('success', 'Competition deleted successfully.');
-    }
-
-    // ADMIN METHODS - Request Management
+    // ========================
+    // REQUEST MANAGEMENT (ADMIN)
+    // ========================
 
     public function adminRequestIndex(Request $request)
     {
         $status = $request->query('status');
 
         $requests = CompetitionRequest::with(['user', 'competition.category'])
-            ->when($status, function ($query) use ($status) {
-                return $query->where('request_verified', $status);
-            })
+            ->when($status, fn($q) => $q->where('request_verified', $status))
             ->latest()
             ->get();
 
@@ -113,8 +103,7 @@ class CompetitionController extends Controller
 
     public function adminRequestShow($id)
     {
-        $request = CompetitionRequest::with(['user', 'competition.category'])
-            ->findOrFail($id);
+        $request = CompetitionRequest::with(['user', 'competition.category'])->findOrFail($id);
 
         return response()->json([
             'success' => true,
@@ -142,7 +131,9 @@ class CompetitionController extends Controller
         return back()->with('success', 'Request status updated.');
     }
 
-    // USER METHODS - Student & Supervisor (Combined)
+    // ========================
+    // USER METHODS
+    // ========================
 
     public function userIndex()
     {
@@ -177,8 +168,7 @@ class CompetitionController extends Controller
             'request_verified' => 'pending',
         ]);
 
-        $redirectRoute = $this->getUserRedirectRoute('index');
-        return redirect()->route($redirectRoute)
+        return redirect()->route($this->getUserRedirectRoute('index'))
             ->with('success', 'Request submitted successfully.');
     }
 
@@ -197,17 +187,15 @@ class CompetitionController extends Controller
     public function userUpdate(Request $request, $id)
     {
         $validated = $this->validateCompetitionUpdate($request);
-        $competition = Competition::findOrFail($id);
 
-        // Verify user owns this competition request
         CompetitionRequest::where('competition_id', $id)
             ->where('user_id', Auth::id())
-            ->firstOrFail();
+            ->firstOrFail(); // Authorization check
 
+        $competition = Competition::findOrFail($id);
         $competition->update($validated);
 
-        $redirectRoute = $this->getUserRedirectRoute('index');
-        return redirect()->route($redirectRoute)
+        return redirect()->route($this->getUserRedirectRoute('index'))
             ->with('success', 'Competition updated successfully.');
     }
 
@@ -219,21 +207,19 @@ class CompetitionController extends Controller
 
         $request->delete();
 
-        $competition = Competition::findOrFail($id);
-        $competition->delete();
+        Competition::findOrFail($id)->delete();
 
-        $redirectRoute = $this->getUserRedirectRoute('index');
-        return redirect()->route($redirectRoute)
+        return redirect()->route($this->getUserRedirectRoute('index'))
             ->with('success', 'Competition request deleted.');
     }
 
-    // ========================================
+    // ========================
     // HELPER METHODS
-    // ========================================
+    // ========================
 
     private function validateCompetition(Request $request, bool $isAdmin = false)
     {
-        $rules = [
+        return $request->validate([
             'category_id' => 'required|exists:categories,category_id',
             'competition_tittle' => 'required|string|max:255',
             'competition_description' => 'required|string',
@@ -241,11 +227,9 @@ class CompetitionController extends Controller
             'competition_level' => 'required|in:regional,nasional,internasional',
             'competition_registration_start' => 'required|date',
             'competition_registration_deadline' => 'required|date',
-            'competition_registion_link' => $isAdmin ? 'required|url|max:255' : 'nullable|url',
+            'competition_registration_link' => $isAdmin ? 'required|url|max:255' : 'nullable|url',
             'competition_document' => $isAdmin ? 'nullable|file|mimes:pdf,doc,docx|max:2048' : 'required|file|mimes:pdf,docx|max:2048',
-        ];
-
-        return $request->validate($rules);
+        ]);
     }
 
     private function validateCompetitionUpdate(Request $request)
@@ -256,7 +240,7 @@ class CompetitionController extends Controller
             'competition_organizer' => 'required|string|max:255',
             'competition_level' => 'required|in:regional,nasional,internasional',
             'competition_registration_deadline' => 'required|date',
-            'competition_registion_link' => 'nullable|url',
+            'competition_registration_link' => 'nullable|url|max:255',
         ]);
     }
 
@@ -275,13 +259,13 @@ class CompetitionController extends Controller
 
     private function getUserViewPath(string $view)
     {
-        $userRole = Auth::user()->role ?? 'student';
+        $userRole = strtolower(Auth::user()->role ?? 'student');
         return "{$userRole}.competitions.{$view}";
     }
 
     private function getUserRedirectRoute(string $action)
     {
-        $userRole = Auth::user()->role ?? 'student';
+        $userRole = strtolower(Auth::user()->role ?? 'student');
         return "{$userRole}.competitions.{$action}";
     }
 }

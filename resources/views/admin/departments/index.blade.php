@@ -5,12 +5,11 @@
     <div class="card-body">
         <h4 class="card-title mb-4">Department Data</h4>
 
-        <!-- Button to Open Add Department Modal -->
+
         <button type="button" class="btn btn-primary btn-rounded btn-fw mb-3" data-bs-toggle="modal" data-bs-target="#addDepartmentModal">
             <i class="bi bi-plus-circle me-2"></i> Add Department
         </button>
 
-        <!-- Modal Add Department -->
         <div class="modal fade" id="addDepartmentModal" tabindex="-1" aria-labelledby="addDepartmentLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <form action="{{ route('departments.store') }}" method="POST">
@@ -35,7 +34,6 @@
             </div>
         </div>
 
-        <!-- Table for Departments -->
         <div class="table-responsive">
             <table class="table table-hover align-middle">
                 <thead class="table-light">
@@ -51,41 +49,19 @@
                         <td>{{ $loop->iteration }}</td>
                         <td>{{ $department->department_name }}</td>
                         <td>
-                            <!-- Show Button -->
-                            <button type="button" class="btn btn-info btn-rounded btn-sm text-white" data-bs-toggle="modal" data-bs-target="#showDepartmentModal{{ $department->department_id }}">
-                                <i class="bi bi-eye"></i> Show
-                            </button>
+
 
                             <!-- Edit Button -->
-                            <button type="button" class="btn btn-warning btn-rounded btn-sm text-white" data-bs-toggle="modal" data-bs-target="#editDepartmentModal{{ $department->department_id }}">
-                                <i class="bi bi-pencil-square"></i> Edit
+                            <button type="button" class="btn btn-warning btn-rounded btn-sm " data-bs-toggle="modal" data-bs-target="#editDepartmentModal{{ $department->department_id }}">
+                                <i class="bi bi-pencil-square"></i>
                             </button>
 
                             <!-- Delete Button -->
                             <button type="button" class="btn btn-danger btn-rounded btn-sm" data-bs-toggle="modal" data-bs-target="#deleteDepartmentModal{{ $department->department_id }}">
-                                <i class="bi bi-trash"></i> Delete
+                                <i class="bi bi-trash"></i> 
                             </button>
                         </td>
                     </tr>
-
-                    <!-- Show Department Modal -->
-                    <div class="modal fade" id="showDepartmentModal{{ $department->department_id }}" tabindex="-1" aria-labelledby="showDepartmentLabel{{ $department->department_id }}" aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="showDepartmentLabel{{ $department->department_id }}">Department Details</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <p><strong>ID:</strong> {{ $department->department_id }}</p>
-                                    <p><strong>Name:</strong> {{ $department->department_name }}</p>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
 
                     <!-- Edit Department Modal -->
                     <div class="modal fade" id="editDepartmentModal{{ $department->department_id }}" tabindex="-1" aria-labelledby="editDepartmentLabel{{ $department->department_id }}" aria-hidden="true">

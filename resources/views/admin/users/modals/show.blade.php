@@ -28,7 +28,7 @@
                                 class="img-fluid rounded" style="max-width: 200px; max-height: 200px; object-fit: cover; display: block;" />
                         </div>
                     </div>
-
+{{-- @dd($user->role->role_name); --}}
                     <!-- Right Column for User Info -->
                     <div class="col-md-8">
                         <!-- Common fields -->

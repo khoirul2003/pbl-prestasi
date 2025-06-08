@@ -50,4 +50,9 @@ class DetailStudent extends Model
     {
         return $this->hasMany(StudentPeriod::class, 'detail_student_id', 'detail_student_id');
     }
+
+    public function supervisor()
+    {
+        return $this->belongsTo(DetailSupervisor::class, 'supervisor_id', 'detail_supervisor_id');
+    }
 }

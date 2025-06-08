@@ -52,7 +52,7 @@ class StudentCompetitionController extends Controller
             'competition_level' => $request->competition_level,
             'competition_registration_start' => $request->competition_registration_start,
             'competition_registration_deadline' => $request->competition_registration_deadline,
-            'competition_registion_link' => $request->competition_registion_link,
+            'competition_registration_link' => $request->competition_registion_link,
             'competition_document' => $documentPath,
         ]);
 
@@ -84,7 +84,7 @@ class StudentCompetitionController extends Controller
             'competition_organizer' => 'required',
             'competition_level' => 'required',
             'competition_registration_deadline' => 'required|date',
-            'competition_registion_link' => 'nullable|url',
+            'competition_registration_link' => 'nullable|url',
         ]);
 
         $competition = Competition::findOrFail($id);

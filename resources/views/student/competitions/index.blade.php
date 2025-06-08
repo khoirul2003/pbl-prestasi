@@ -28,7 +28,7 @@
             <!-- Submit button -->
             <div class="mb-3">
                 <button type="button" class="btn btn-primary btn-rounded btn-fw" data-bs-toggle="modal" data-bs-target="#addCompetitionModal">
-                    <i class="bi bi-plus-circle me-2"></i> Submit Competition Request
+                    <i class="bi bi-plus-circle me-2"></i> Add Competition Request
                 </button>
             </div>
 

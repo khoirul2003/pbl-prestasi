@@ -16,13 +16,14 @@ use App\Http\Controllers\PreUniversityAchievementController;
 use App\Http\Controllers\RecommendationController;
 use App\Http\Controllers\SkillController;
 use App\Http\Controllers\Student\AchievementController as StudentAchievementController;
-
+use App\Http\Controllers\StudentCompetitionController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\StudentPeriodController;
 use App\Http\Controllers\StudentRecommendationController;
 use App\Http\Controllers\StudyProgramController;
-
+use App\Http\Controllers\SupervisorCompetitionController;
 use App\Http\Controllers\SupervisorController;
+use App\Http\Controllers\SupervisorRecommendationController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -126,12 +127,12 @@ Route::middleware('auth')->prefix('student')->group(function () {
     Route::delete('/achievements/{id}', [StudentAchievementController::class, 'destroy'])->name('student.achievements.destroy');
 
     // Student Competition Requests
-    Route::get('competitions', [CompetitionController::class, 'userIndex'])->name('student.competitions.index');
-    Route::get('competitions/create', [CompetitionController::class, 'userCreate'])->name('student.competitions.create');
-    Route::post('competitions', [CompetitionController::class, 'userStore'])->name('student.competitions.store');
-    Route::get('competitions/{id}/edit', [CompetitionController::class, 'userEdit'])->name('student.competitions.edit');
-    Route::put('competitions/{id}', [CompetitionController::class, 'userUpdate'])->name('student.competitions.update');
-    Route::delete('competitions/{id}', [CompetitionController::class, 'userDestroy'])->name('student.competitions.destroy');
+    Route::get('competitions', [StudentCompetitionController::class, 'index'])->name('student.competitions.index');
+    Route::get('competitions/create', [StudentCompetitionController::class, 'create'])->name('student.competitions.create');
+    Route::post('competitions', [StudentCompetitionController::class, 'store'])->name('student.competitions.store');
+    Route::get('competitions/{id}/edit', [StudentCompetitionController::class, 'edit'])->name('student.competitions.edit');
+    Route::put('competitions/{id}', [StudentCompetitionController::class, 'update'])->name('student.competitions.update');
+    Route::delete('competitions/{id}', [StudentCompetitionController::class, 'destroy'])->name('student.competitions.destroy');
 });
 
 Route::middleware('auth')->prefix('supervisor')->group(function () {
@@ -141,10 +142,12 @@ Route::middleware('auth')->prefix('supervisor')->group(function () {
     Route::post('/profile/update', [SupervisorController::class, 'updateProfile'])->name('supervisor.profile.update');
 
     // Supervisor Competition Requests
-    Route::get('competitions', [CompetitionController::class, 'userIndex'])->name('supervisor.competitions.index');
-    Route::get('competitions/create', [CompetitionController::class, 'userCreate'])->name('supervisor.competitions.create');
-    Route::post('competitions', [CompetitionController::class, 'userStore'])->name('supervisor.competitions.store');
-    Route::get('competitions/{id}/edit', [CompetitionController::class, 'userEdit'])->name('supervisor.competitions.edit');
-    Route::put('competitions/{id}', [CompetitionController::class, 'userUpdate'])->name('supervisor.competitions.update');
-    Route::delete('competitions/{id}', [CompetitionController::class, 'userDestroy'])->name('supervisor.competitions.destroy');
+    Route::get('competitions', [SupervisorCompetitionController::class, 'index'])->name('supervisor.competitions.index');
+    Route::get('competitions/create', [SupervisorCompetitionController::class, 'create'])->name('supervisor.competitions.create');
+    Route::post('competitions', [SupervisorCompetitionController::class, 'store'])->name('supervisor.competitions.store');
+    Route::get('competitions/{id}/edit', [SupervisorCompetitionController::class, 'edit'])->name('supervisor.competitions.edit');
+    Route::put('competitions/{id}', [SupervisorCompetitionController::class, 'update'])->name('supervisor.competitions.update');
+    Route::delete('competitions/{id}', [SupervisorCompetitionController::class, 'destroy'])->name('supervisor.competitions.destroy');
+
+    Route::get('recommendations', [SupervisorRecommendationController::class, 'index'])->name('supervisor.recommendations.index');
 });
