@@ -11,8 +11,8 @@
             content="PRESen, prestasi mahasiswa, rekomendasi lomba, sistem informasi, pencatatan prestasi" />
 
         <!-- Favicons -->
-        <link href="landing_page/assets/img/favicon.png" rel="icon" />
-        <link href="landing_page/assets/img/apple-touch-icon.png" rel="apple-touch-icon" />
+        <link href="landing_pages/assets/img/favicon.png" rel="icon" />
+        <link href="landing_pages/assets/img/apple-touch-icon.png" rel="apple-touch-icon" />
 
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com" rel="preconnect" />
@@ -22,14 +22,14 @@
             rel="stylesheet" />
 
         <!-- Vendor CSS Files -->
-        <link href="landing_page/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
-        <link href="landing_page/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet" />
-        <link href="landing_page/assets/vendor/aos/aos.css" rel="stylesheet" />
-        <link href="landing_page/assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet" />
-        <link href="landing_page/assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet" />
+        <link href="landing_pages/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+        <link href="landing_pages/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet" />
+        <link href="landing_pages/assets/vendor/aos/aos.css" rel="stylesheet" />
+        <link href="landing_pages/assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet" />
+        <link href="landing_pages/assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet" />
 
         <!-- Main CSS File -->
-        <link href="landing_page/assets/css/main.css" rel="stylesheet" />
+        <link href="landing_pages/assets/css/main.css" rel="stylesheet" />
 
         <style>
             /* Style kecil untuk tombol bahasa */
@@ -101,7 +101,8 @@
 
                         <div class="col-lg-6">
                             <div class="hero-image">
-                                <img src="landing_page/assets/img/illustration/illustration-16.webp" alt="PRESen App"
+                                <img src="landing_pages
+                    /assets/img/illustration/illustration-16.webp" alt="PRESen App"
                                     class="img-fluid" loading="lazy" />
                             </div>
                         </div>
@@ -179,17 +180,20 @@
                         <div class="col-lg-6 about-images" data-aos="fade-up" data-aos-delay="200">
                             <div class="row gy-4">
                                 <div class="col-lg-6">
-                                    <img src="landing_page/assets/img/about/about-portrait-1.webp" class="img-fluid"
+                                    <img src="landing_pages
+                        /assets/img/about/about-portrait-1.webp" class="img-fluid"
                                         alt="Tentang PRESen" />
                                 </div>
                                 <div class="col-lg-6">
                                     <div class="row gy-4">
                                         <div class="col-lg-12">
-                                            <img src="landing_page/assets/img/about/about-8.webp" class="img-fluid"
+                                            <img src="landing_pages
+                                /assets/img/about/about-8.webp" class="img-fluid"
                                                 alt="Dashboard PRESen" />
                                         </div>
                                         <div class="col-lg-12">
-                                            <img src="landing_page/assets/img/about/about-12.webp" class="img-fluid"
+                                            <img src="landing_pages
+                                /assets/img/about/about-12.webp" class="img-fluid"
                                                 alt="Fitur PRESen" />
                                         </div>
                                     </div>
@@ -543,16 +547,16 @@
         <div id="preloader"></div>
 
         <!-- Vendor JS Files -->
-        <script src="landing_page/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-        <script src="landing_page/assets/vendor/php-email-form/validate.js"></script>
-        <script src="landing_page/assets/vendor/aos/aos.js"></script>
-        <script src="landing_page/assets/vendor/glightbox/js/glightbox.min.js"></script>
-        <script src="landing_page/assets/vendor/imagesloaded/imagesloaded.pkgd.min.js"></script>
-        <script src="landing_page/assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
-        <script src="landing_page/assets/vendor/swiper/swiper-bundle.min.js"></script>
+        <script src="landing_pages/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+        <script src="landing_pages/assets/vendor/php-email-form/validate.js"></script>
+        <script src="landing_pages/assets/vendor/aos/aos.js"></script>
+        <script src="landing_pages/assets/vendor/glightbox/js/glightbox.min.js"></script>
+        <script src="landing_pages/assets/vendor/imagesloaded/imagesloaded.pkgd.min.js"></script>
+        <script src="landing_pages/assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
+        <script src="landing_pages/assets/vendor/swiper/swiper-bundle.min.js"></script>
 
         <!-- Main JS File -->
-        <script src="landing_page/assets/js/main.js"></script>
+        <script src="landing_pages/assets/js/main.js"></script>
 
         <!-- Translation Script -->
         <script>
