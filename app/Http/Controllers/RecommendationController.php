@@ -263,7 +263,9 @@ class RecommendationController extends Controller
             RecommendationResult::updateOrCreate(
                 [
                     'competition_id' => $competition->competition_id,
-                    'user_id' => $student->user_id
+                    'user_id' => $student->user_id,
+                    'detail_student_id' => $student->detailStudent->detail_student_id,
+
                 ],
                 [
                     'recommendation_result_score' => $result['score'],

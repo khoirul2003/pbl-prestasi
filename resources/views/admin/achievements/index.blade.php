@@ -6,25 +6,39 @@
     <div class="card-body">
         <h4 class="card-title mb-4">Achievements List</h4>
 
-        <div class="mb-3">
-            <a href="{{ route('achievements.index') }}" class="btn btn-sm {{ !request('status') ? 'btn-primary' : 'btn-outline-primary' }}">
-                <i class="bi bi-list"></i> All
-            </a>
-            <a href="{{ route('achievements.index', ['status' => 'pending']) }}" class="btn btn-sm {{ request('status') == 'pending' ? 'btn-primary' : 'btn-outline-primary' }}">
-                <i class="bi bi-clock"></i> Pending
-            </a>
-            <a href="{{ route('achievements.index', ['status' => 'processed']) }}" class="btn btn-sm {{ request('status') == 'processed' ? 'btn-primary' : 'btn-outline-primary' }}">
-                <i class="bi bi-check-circle"></i> Processed
-            </a>
-        </div>
+        {{-- Success Message --}}
+        @if (session('success'))
+            <div class="alert alert-success">{{ session('success') }}</div>
+        @endif
 
+        {{-- Filter Tabs --}}
+        <ul class="nav nav-tabs mb-4">
+            <li class="nav-item">
+                <a class="nav-link {{ request('status') == null ? 'active' : '' }}" href="{{ route('achievements.index') }}">
+                    <i class="bi bi-list"></i> All Achievements
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{ request('status') == 'pending' ? 'active' : '' }}" href="{{ route('achievements.index', ['status' => 'pending']) }}">
+                    <i class="bi bi-clock"></i> Pending Achievements
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{ request('status') == 'processed' ? 'active' : '' }}" href="{{ route('achievements.index', ['status' => 'processed']) }}">
+                    <i class="bi bi-check-circle"></i> Processed Achievements
+                </a>
+            </li>
+        </ul>
+
+        
+
+        {{-- Achievements Table --}}
         <div class="table-responsive">
             <table class="table table-hover align-middle">
                 <thead class="table-light">
                     <tr>
                         <th>No.</th>
                         <th>Student</th>
-
                         <th>Title</th>
                         <th>Ranking</th>
                         <th>Level</th>
@@ -33,11 +47,10 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse ($achievements as $achievement)
+                    @forelse ($achievements as $index => $achievement)
                         <tr>
-                            <td>{{ $achievements->firstItem() + $loop->index }}</td>
+                            <td>{{ $index + $achievements->firstItem() }}</td>
                             <td>{{ $achievement->user->user_name ?? '-' }}</td>
-
                             <td>{{ $achievement->achievement_title }}</td>
                             <td>{{ $achievement->achievement_ranking }}</td>
                             <td>{{ ucfirst($achievement->achievement_level) }}</td>
@@ -50,22 +63,22 @@
                                     <span class="badge badge-danger">Rejected</span>
                                 @endif
                             </td>
-                            <td>
-                                <a href="{{ route('achievements.show', $achievement->achievement_id) }}" class="btn btn-info btn-sm btn-rounded btn-fw">
-                                    <i class="bi bi-eye"></i>
+                            <td class="d-flex gap-1">
+                                <a href="{{ route('achievements.show', $achievement->achievement_id) }}" class="btn btn-secondary btn-sm btn-rounded btn-fw">
+                                    <i class="bi bi-eye"></i> Show
                                 </a>
 
                                 @if ($achievement->achievement_verified == 'pending')
                                     <form action="{{ route('achievements.approve', $achievement->achievement_id) }}" method="POST" class="d-inline">
                                         @csrf
                                         <button type="submit" class="btn btn-success btn-sm btn-rounded btn-fw" onclick="return confirm('Approve this achievement?')">
-                                            <i class="bi bi-check"></i>
+                                            <i class="bi bi-check"></i> Approve
                                         </button>
                                     </form>
-                                    <form action="{{ route('achievements.reject', $achievement->achievement_id) }}" method="POST" class="d-inline">
+                                    <form action="#" method="POST" class="d-inline" data-bs-toggle="modal" data-bs-target="#rejectModal{{ $achievement->achievement_id }}">
                                         @csrf
-                                        <button type="submit" class="btn btn-danger btn-sm btn-rounded btn-fw" onclick="return confirm('Reject this achievement?')">
-                                            <i class="bi bi-x-circle"></i>
+                                        <button type="button" class="btn btn-danger btn-sm btn-rounded btn-fw">
+                                            <i class="bi bi-x-circle"></i> Reject
                                         </button>
                                     </form>
                                 @endif
@@ -73,7 +86,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="8" class="text-center">No achievements found.</td>
+                            <td colspan="7" class="text-center">No achievements found.</td>
                         </tr>
                     @endforelse
                 </tbody>
@@ -81,10 +94,37 @@
         </div>
 
         {{-- Pagination --}}
-        <div class="mt-3">
-            {{ $achievements->appends(request()->query())->links() }}
+        <div class="d-flex justify-content-center mt-4">
+            {{ $achievements->links() }}
         </div>
     </div>
 </div>
+
+{{-- Reject Modal for each Achievement --}}
+@foreach ($achievements as $achievement)
+    <div class="modal fade" id="rejectModal{{ $achievement->achievement_id }}" tabindex="-1" aria-labelledby="rejectModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form action="{{ route('achievements.reject', $achievement->achievement_id) }}" method="POST">
+                    @csrf
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="rejectModalLabel">Reject Achievement</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="rejectionDescription" class="form-label">Rejection Description</label>
+                            <textarea class="form-control" id="rejectionDescription" name="rejection_description" rows="4" required></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-danger">Reject Achievement</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+@endforeach
 
 @endsection

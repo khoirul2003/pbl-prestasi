@@ -8,7 +8,7 @@
             <div class="col-lg-4 col-md-5">
                 <div class="card text-center border-0 shadow rounded-4">
                     <div class="card-body py-5">
-                        <img src="{{ asset($supervisor->detail_supervisor_photo ? 'photos/supersivors/' . $supervisor->detail_supervisor_photo : 'photos/avatar-default.png') }}"
+                        <img src="{{ asset($supervisor->detail_supervisor_photo ? 'photos/supervisors/' . $supervisor->detail_supervisor_photo : 'photos/avatar-default.png') }}"
                             alt="Photo" class="rounded-circle shadow-sm mb-3"
                             style="width: 110px; height: 110px; object-fit: cover; border: 4px solid #f1f1f1;">
 
