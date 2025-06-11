@@ -16,12 +16,10 @@
                         <div class="col-md-4 mb-3">
                             <label class="form-label">Photo Preview</label>
                             <div class="text-center">
-                                <!-- If the photo exists, display it, otherwise show a placeholder image -->
                                 <img id="photoPreview"
                                      src="{{ asset('photos/' . ($user->role->role_name == 'student' ? 'students' : 'supervisors') . '/' .
                                             (optional($user->role->role_name == 'student' ? $user->detailStudent : $user->detailSupervisor)->detail_student_photo ??
-                                            optional($user->role->role_name == 'student' ? $user->detailStudent : $user->detailSupervisor)->detail_supervisor_photo
-                                            ?? 'default-photo.png')) }}"
+                                            optional($user->role->role_name == 'student' ? $user->detailStudent : $user->detailSupervisor)->detail_supervisor_photo ?? 'default-photo.png')) }}"
                                      class="img-fluid rounded" style="max-width: 100%; height: auto; display: block;" />
                             </div>
 
@@ -149,7 +147,7 @@
                                 <div class="row">
                                     <div class="col-12 mb-3">
                                         <label for="detail_supervisor_address" class="form-label">Address</label>
-                                        <textarea class="form-control custom-textarea" name="detail_supervisor_address" placeholder="Full Address" required>{{ $user->detailSupervisor->detail_supervisor_address }}</textarea>
+                                        <textarea class="form-control" name="detail_supervisor_address" placeholder="Full Address" rows="3" required>{{ $user->detailSupervisor->detail_supervisor_address }}</textarea>
                                     </div>
                                 </div>
                             @endif
@@ -165,13 +163,6 @@
         </form>
     </div>
 </div>
-
-<style>
-    .custom-textarea {
-        height: 200px; /* Adjust the height to your preference */
-        width: 100%; /* Adjust the width to your preference */
-    }
-</style>
 
 <script>
     // Preview the image when user selects a file

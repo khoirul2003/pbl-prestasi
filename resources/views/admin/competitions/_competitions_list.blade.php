@@ -5,7 +5,7 @@
             <th>Title</th>
             <th>Category</th>
             <th>Organizer</th>
-            <th>Document</th>
+
             <th>Status</th>
             <th>Action</th>
         </tr>
@@ -17,16 +17,7 @@
                 <td>{{ $competition->competition_tittle }}</td>
                 <td>{{ $competition->category->category_name ?? '-' }}</td>
                 <td>{{ $competition->competition_organizer }}</td>
-                <td>
-                    @if ($competition->competition_document)
-                        <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal"
-                            data-bs-target="#pdfModal{{ $competition->competition_id }}">
-                            <i class="bi bi-file-earmark-pdf"></i> View PDF
-                        </button>
-                    @else
-                        <span class="text-muted">No document</span>
-                    @endif
-                </td>
+                
                 <td>
                     {{-- Display status of the competition --}}
                     @if ($competition->competitionRequests->isNotEmpty())

@@ -18,8 +18,8 @@ class RoleSeeder extends Seeder
         Role::truncate();
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
-        Role::create(['role_name' => 'Admin']);
-        Role::create(['role_name' => 'Supervisor']);
-        Role::create(['role_name' => 'Student']);
+        Role::create(['role_name' => 'admin']);
+        Role::create(['role_name' => 'supervisor']);
+        Role::create(['role_name' => 'student']);
     }
 }

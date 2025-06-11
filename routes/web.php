@@ -25,20 +25,35 @@ use App\Http\Controllers\SupervisorCompetitionController;
 use App\Http\Controllers\SupervisorController;
 use App\Http\Controllers\SupervisorRecommendationController;
 use App\Http\Controllers\UserController;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'home')->name('home');
 Route::view('/test', 'test')->name('test');
 
+Route::get('/send-test-email', function () {
+    Mail::raw('Test email body', function ($message) {
+        $message->to('dimaskechiel58@gmail.com')
+            ->subject('Test Email');
+    });
 
+    return 'Test email sent!';
+});
 
 Route::get('login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('login', [AuthController::class, 'login'])->name('login.post');
 
 Route::get('register', [AuthController::class, 'showRegisterForm'])->name('register');
 Route::post('register', [AuthController::class, 'register'])->name('register.post');
+Route::get('/email/verify/{user}', [AuthController::class, 'verifyEmail'])->name('verification.verify');
 
 Route::post('logout', [AuthController::class, 'logout'])->name('logout');
+
+Route::get('password/forgot', [AuthController::class, 'showForgotPasswordForm'])->name('password.forgot');
+Route::post('password/email', [AuthController::class, 'sendResetLinkEmail'])->name('password.email');
+Route::get('password/reset/{token}/{email}', [AuthController::class, 'showResetPasswordForm'])->name('password.reset');
+Route::post('password/reset', [AuthController::class, 'resetPassword'])->name('password.update');
+
 
 
 Route::middleware('auth')->prefix('admin')->group(function () {
@@ -83,6 +98,7 @@ Route::middleware('auth')->prefix('admin')->group(function () {
     Route::put('users/{role}/{id}', [UserController::class, 'update'])->name('admin.users.update');
     Route::delete('users/{role}/{id}', [UserController::class, 'destroy'])->name('admin.users.destroy');
 
+
     // Admin Competition Management
     Route::get('competitions', [CompetitionController::class, 'adminIndex'])->name('admin.competitions.index');
     Route::get('competitions/create', [CompetitionController::class, 'adminCreate'])->name('admin.competitions.create');
@@ -91,6 +107,7 @@ Route::middleware('auth')->prefix('admin')->group(function () {
     Route::get('competitions/{id}/edit', [CompetitionController::class, 'adminEdit'])->name('admin.competitions.edit');
     Route::put('competitions/{id}', [CompetitionController::class, 'adminUpdate'])->name('admin.competitions.update');
     Route::delete('competitions/{id}', [CompetitionController::class, 'adminDestroy'])->name('admin.competitions.destroy');
+    Route::put('competitions/request/{id}/status', [CompetitionController::class, 'adminUpdateRequestStatus'])->name('admin.competitions.update-status');
 
     // Admin Request Management
     Route::get('requests', [CompetitionController::class, 'adminRequestIndex'])->name('admin.requests.index');
@@ -120,11 +137,16 @@ Route::middleware('auth')->prefix('student')->group(function () {
     Route::get('/recommendations', [StudentRecommendationController::class, 'index'])->name('student.recommendations.index');
 
     // Student Achievements
-    Route::get('/achievements', [StudentAchievementController::class, 'index'])->name('student.achievements.index');
-    Route::get('/achievements/{id}', [StudentAchievementController::class, 'show'])->name('student.achievements.show');
-    Route::post('/achievements', [StudentAchievementController::class, 'store'])->name('student.achievements.store');
-    Route::put('/achievements/{id}', [StudentAchievementController::class, 'update'])->name('student.achievements.update');
-    Route::delete('/achievements/{id}', [StudentAchievementController::class, 'destroy'])->name('student.achievements.destroy');
+    Route::get('achievements/', [StudentAchievementController::class, 'index'])->name('student.achievements.index');
+    Route::post('achievements/', [StudentAchievementController::class, 'store'])->name('student.achievements.store');
+    Route::get('achievements/{id}', [StudentAchievementController::class, 'show'])->name('student.achievements.show');
+    Route::put('achievements/{id}', [StudentAchievementController::class, 'update'])->name('student.achievements.update');
+    Route::delete('achievements/{id}', [StudentAchievementController::class, 'destroy'])->name('student.achievements.destroy');
+
+    Route::post('achievements/pre', [StudentAchievementController::class, 'storePre'])->name('student.pre_achievements.store');
+    Route::get('achievements/pre/{id}', [StudentAchievementController::class, 'showPre'])->name('student.pre_achievements.show');
+    Route::put('achievements/pre/{id}', [StudentAchievementController::class, 'updatePre'])->name('student.pre_achievements.update');
+    Route::delete('achievements/pre/{id}', [StudentAchievementController::class, 'destroyPre'])->name('student.pre_achievements.destroy');
 
     // Student Competition Requests
     Route::get('competitions', [StudentCompetitionController::class, 'index'])->name('student.competitions.index');

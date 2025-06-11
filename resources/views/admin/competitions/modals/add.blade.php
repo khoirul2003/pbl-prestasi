@@ -53,8 +53,8 @@
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Upload Document</label>
-                    <input type="file" name="competition_document" class="form-control">
-                    <small class="text-muted">Optional: Upload competition document (PDF recommended)</small>
+                    <input type="file" name="competition_document" class="form-control" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+                    <small class="text-muted">Optional: Upload competition document</small>
                 </div>
             </div>
             <div class="modal-footer">

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Competition;
 use App\Models\CompetitionRequest;
 use Illuminate\Http\Request;
@@ -9,15 +10,23 @@ use Illuminate\Support\Facades\Auth;
 
 class StudentCompetitionController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $requests = CompetitionRequest::with('competition')
-            ->where('user_id', Auth::id())
-            ->latest()
-            ->get();
+        $query = CompetitionRequest::with('competition')
+            ->where('user_id', Auth::id());
+
+        if ($request->has('status')) {
+            $status = $request->input('status');
+            if (in_array($status, ['pending', 'approved', 'rejected'])) {
+                $query->where('request_verified', $status);
+            }
+        }
+
+        $requests = $query->latest()->get();
 
         return view('student.competitions.index', compact('requests'));
     }
+
 
     public function create()
     {
@@ -34,8 +43,8 @@ class StudentCompetitionController extends Controller
             'competition_level' => 'required', //regional, nasional, internasional
             'competition_registration_start' => 'required|date',
             'competition_registration_deadline' => 'required|date',
-            'competition_registion_link' => 'nullable|url',
-            'competition_document' => 'required|file|mimes:pdf,docx|max:2048',
+            'competition_registration_link' => 'nullable|url',
+            'competition_document' => 'required|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:2048',
         ]);
 
         $document = $request->file('competition_document');
@@ -52,7 +61,7 @@ class StudentCompetitionController extends Controller
             'competition_level' => $request->competition_level,
             'competition_registration_start' => $request->competition_registration_start,
             'competition_registration_deadline' => $request->competition_registration_deadline,
-            'competition_registration_link' => $request->competition_registion_link,
+            'competition_registration_link' => $request->competition_registration_link,
             'competition_document' => $documentPath,
         ]);
 
@@ -72,7 +81,7 @@ class StudentCompetitionController extends Controller
             ->where('competition_id', $id)
             ->firstOrFail();
 
-        $categories = \App\Models\Category::all();
+        $categories = Category::all();
         return view('student.competitions.edit', compact('request', 'categories'));
     }
 
@@ -85,21 +94,32 @@ class StudentCompetitionController extends Controller
             'competition_level' => 'required',
             'competition_registration_deadline' => 'required|date',
             'competition_registration_link' => 'nullable|url',
+            'competition_document' => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:2048',
         ]);
 
         $competition = Competition::findOrFail($id);
 
-        $competition->update([
+        $data = [
             'competition_tittle' => $request->competition_tittle,
             'competition_description' => $request->competition_description,
             'competition_organizer' => $request->competition_organizer,
             'competition_level' => $request->competition_level,
             'competition_registration_deadline' => $request->competition_registration_deadline,
-            'competition_registion_link' => $request->competition_registion_link,
-        ]);
+            'competition_registration_link' => $request->competition_registration_link,
+        ];
+
+        if ($request->hasFile('competition_document')) {
+            $document = $request->file('competition_document');
+            $fileName = time() . '_' . $document->getClientOriginalName();
+            $document->move(public_path('documents/competitions'), $fileName);
+            $data['competition_document'] = 'documents/competitions/' . $fileName;
+        }
+
+        $competition->update($data);
 
         return redirect()->route('student.competitions.index')->with('success', 'Competition updated successfully.');
     }
+
 
     public function destroy($id)
     {

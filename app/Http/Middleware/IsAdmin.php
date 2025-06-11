@@ -11,7 +11,7 @@ class IsAdmin
 {
     public function handle(Request $request, Closure $next)
     {
-        if (Auth::check() && Auth::user()->role->role_name === 'Admin') {
+        if (Auth::check() && Auth::user()->role->role_name === 'sdmin') {
             return $next($request);
         }
         abort(403);
