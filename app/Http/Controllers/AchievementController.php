@@ -44,17 +44,24 @@ class AchievementController extends Controller
         return redirect()->route('achievements.index', ['status' => 'pending'])->with('success', 'Achievement approved successfully.');
     }
 
-    public function reject($id)
+    public function reject(Request $request, $id)
     {
+        $request->validate([
+            'rejection_description' => 'required|string|max:1000',
+        ]);
+
         $achievement = Achievement::findOrFail($id);
 
         if ($achievement->achievement_verified !== 'pending') {
             return redirect()->back()->with('error', 'This achievement has already been processed.');
         }
 
-        $achievement->achievement_verified = 'rejected';
-        $achievement->save();
+        $achievement->update([
+            'achievement_verified' => 'rejected',
+            'achievement_reject_description' => $request->rejection_description,
+        ]);
 
-        return redirect()->route('achievements.index', ['status' => 'pending'])->with('success', 'Achievement rejected successfully.');
+        return redirect()->route('achievements.index', ['status' => 'pending'])
+            ->with('success', 'Achievement rejected successfully.');
     }
 }

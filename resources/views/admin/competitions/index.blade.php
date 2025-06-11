@@ -51,7 +51,6 @@
                         <th>Title</th>
                         <th>Category</th>
                         <th>Organizer</th>
-                        <th>Document</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -62,34 +61,58 @@
                             <td>{{ $competition->competition_tittle }}</td>
                             <td>{{ $competition->category->category_name ?? '-' }}</td>
                             <td>{{ $competition->competition_organizer }}</td>
-                            <td>
-                                @if ($competition->competition_document)
-                                    <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal"
-                                        data-bs-target="#pdfModal{{ $competition->competition_id }}">
-                                        <i class="bi bi-file-earmark-pdf"></i> View PDF
-                                    </button>
-                                @else
-                                    <span class="text-muted">No document</span>
-                                @endif
-                            </td>
-                            <td class="d-flex gap-1">
+
+                            @php $request = $competition->competitionRequests->first(); @endphp
+
+                            <td class="d-flex flex-wrap gap-1">
+                                {{-- Show Button --}}
                                 <button class="btn btn-secondary btn-sm" data-bs-toggle="modal"
                                     data-bs-target="#showModal{{ $competition->competition_id }}">
                                     <i class="bi bi-eye"></i> Show
                                 </button>
-                                <button class="btn btn-warning btn-sm" data-bs-toggle="modal"
-                                    data-bs-target="#editModal{{ $competition->competition_id }}">
-                                    <i class="bi bi-pencil-square"></i>
-                                </button>
-                                <form action="{{ route('admin.competitions.destroy', $competition->competition_id) }}"
-                                    method="POST" class="d-inline"
-                                    onsubmit="return confirm('Are you sure want to delete this competition?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-danger btn-sm">
-                                        <i class="bi bi-trash"></i>
+
+                                {{-- Edit & Delete only if NOT pending --}}
+                                @if(!$request || $request->request_verified !== 'pending')
+                                    <button class="btn btn-warning btn-sm" data-bs-toggle="modal"
+                                        data-bs-target="#editModal{{ $competition->competition_id }}">
+                                        <i class="bi bi-pencil-square"></i> Edit
                                     </button>
-                                </form>
+
+                                    <form action="{{ route('admin.competitions.destroy', $competition->competition_id) }}"
+                                        method="POST" class="d-inline"
+                                        onsubmit="return confirm('Are you sure want to delete this competition?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-danger btn-sm">
+                                            <i class="bi bi-trash"></i> Delete
+                                        </button>
+                                    </form>
+                                @endif
+
+                                {{-- Approve & Reject only if pending --}}
+                                @if($request && $request->request_verified === 'pending')
+                                    <form action="{{ route('admin.competitions.update-status', $request->request_id) }}"
+                                        method="POST" class="d-inline">
+                                        @csrf
+                                        @method('PUT')
+                                        <input type="hidden" name="request_verified" value="approved">
+                                        <button class="btn btn-success btn-sm" type="submit"
+                                            onclick="return confirm('Approve this request?')">
+                                            <i class="bi bi-check-circle"></i> Approve
+                                        </button>
+                                    </form>
+
+                                    <form action="{{ route('admin.competitions.update-status', $request->request_id) }}"
+                                        method="POST" class="d-inline">
+                                        @csrf
+                                        @method('PUT')
+                                        <input type="hidden" name="request_verified" value="rejected">
+                                        <button class="btn btn-danger btn-sm" type="submit"
+                                            onclick="return confirm('Reject this request?')">
+                                            <i class="bi bi-x-circle"></i> Reject
+                                        </button>
+                                    </form>
+                                @endif
                             </td>
                         </tr>
                     @empty

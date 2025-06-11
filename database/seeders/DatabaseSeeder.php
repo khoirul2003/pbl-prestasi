@@ -21,8 +21,6 @@ class DatabaseSeeder extends Seeder
             DepartmentSeeder::class,
             StudyProgramSeeder::class,
             UserSeeder::class,
-            DetailStudentSeeder::class,
-            DetailSupervisorSeeder::class,
             CategorySeeder::class,
             CompetitionSeeder::class,
             StudentPeriodSeeder::class,

@@ -228,7 +228,9 @@ class CompetitionController extends Controller
             'competition_registration_start' => 'required|date',
             'competition_registration_deadline' => 'required|date',
             'competition_registration_link' => $isAdmin ? 'required|url|max:255' : 'nullable|url',
-            'competition_document' => $isAdmin ? 'nullable|file|mimes:pdf,doc,docx|max:2048' : 'required|file|mimes:pdf,docx|max:2048',
+            'competition_document' => $isAdmin
+                ? 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:2048'
+                : 'required|file|mimes:pdf,docx,jpg,jpeg,png|max:2048',
         ]);
     }
 
@@ -268,4 +270,6 @@ class CompetitionController extends Controller
         $userRole = strtolower(Auth::user()->role ?? 'student');
         return "{$userRole}.competitions.{$action}";
     }
+
+
 }

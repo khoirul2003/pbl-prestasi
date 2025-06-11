@@ -66,7 +66,7 @@
                                         <input type="checkbox" class="form-check-input" id="remember" name="remember">
                                         <label class="form-check-label text-muted" for="remember">Keep me signed in</label>
                                     </div>
-                                    <a href="#" class="auth-link text-black">Forgot password?</a>
+                                    <a href="{{ route('password.forgot') }}" class="auth-link text-black">Forgot password?</a>
                                 </div>
 
                                 <div class="d-grid gap-2 mt-3">

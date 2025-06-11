@@ -7,6 +7,7 @@ use App\Models\DetailStudent;
 use App\Models\DetailSupervisor;
 use App\Models\StudyProgram;
 use App\Models\User;
+use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -22,13 +23,13 @@ class UserController extends Controller
         if ($role == 'student') {
             $users = User::with('detailStudent', 'role')
                 ->whereHas('role', function ($query) {
-                    $query->where('role_name', 'student');  // Use role_name instead of role_id
+                    $query->where('role_name', 'student');
                 })
                 ->paginate(10);
         } else {
             $users = User::with('detailSupervisor', 'role')
                 ->whereHas('role', function ($query) {
-                    $query->where('role_name', 'supervisor');  // Use role_name instead of role_id
+                    $query->where('role_name', 'supervisor');
                 })
                 ->paginate(10);
         }
@@ -36,7 +37,6 @@ class UserController extends Controller
         // Return the index view with the users and role
         return view('admin.users.index', compact('users', 'role'));
     }
-
 
     // Form to add a new user (either student or supervisor)
     public function create($role)
@@ -54,8 +54,12 @@ class UserController extends Controller
 
     public function store(Request $request, $role)
     {
-        // Determine the role name dynamically
-        $roleName = ($role == 'student') ? 'student' : 'supervisor';
+        // Get the role_id dynamically
+        $roleModel = Role::where('role_name', $role)->first();
+
+        if (!$roleModel) {
+            return back()->withErrors(['error' => 'Role not found'])->withInput();
+        }
 
         // Validation rules for both students and supervisors
         $validationRules = [
@@ -74,7 +78,7 @@ class UserController extends Controller
         ];
 
         // Additional validation rules for students
-        if ($roleName == 'student') {
+        if ($role == 'student') {
             $validationRules = array_merge($validationRules, [
                 'study_program_id' => 'required|exists:study_programs,study_program_id',
                 'detail_student_nim' => 'required|string|unique:detail_students,detail_student_nim',
@@ -105,26 +109,29 @@ class UserController extends Controller
         DB::beginTransaction();
 
         try {
-            // Create the user
+            // Create the user with the role_id
             $user = User::create([
-                'role_name' => $roleName,  // Use role_name instead of role_id
+                'role_id' => $roleModel->role_id,  // Save the role_id
                 'user_name' => $request->user_name,
                 'user_username' => $request->user_username,
                 'user_password' => Hash::make($request->user_password),
             ]);
 
             // Handle photo upload for student or supervisor
-            if ($roleName == 'student' && $request->hasFile('detail_student_photo')) {
+            if ($role == 'student' && $request->hasFile('detail_student_photo')) {
                 $photo = $request->file('detail_student_photo');
-                $photoPath = $photo->storeAs('photos/students', time() . '_' . $photo->getClientOriginalName(), 'public');
-            } elseif ($roleName == 'supervisor' && $request->hasFile('detail_supervisor_photo')) {
+                $filename = time() . '_' . $photo->getClientOriginalName();
+                $photo->move(public_path('photos/students'), $filename);
+                $photoPath = 'photos/students/' . $filename;
+            } elseif ($role == 'supervisor' && $request->hasFile('detail_supervisor_photo')) {
                 $photo = $request->file('detail_supervisor_photo');
-                $photoPath = $photo->storeAs('photos/supervisors', time() . '_' . $photo->getClientOriginalName(), 'public');
+                $filename = time() . '_' . $photo->getClientOriginalName();
+                $photo->move(public_path('photos/supervisors'), $filename);
+                $photoPath = 'photos/supervisors/' . $filename;
             }
 
-            dd($photoPath);
-
-            if ($roleName == 'student') {
+            // Save details based on the role
+            if ($role == 'student') {
                 $dataDetail = $request->only([
                     'study_program_id',
                     'detail_student_nim',
@@ -135,8 +142,8 @@ class UserController extends Controller
                     'detail_student_email',
                 ]);
                 $dataDetail['user_id'] = $user->user_id;
-                dd($photoPath);
                 $dataDetail['detail_student_photo'] = $photoPath ?? null;
+
                 DetailStudent::create($dataDetail);
             } else {
                 $dataDetail = $request->only([
@@ -150,20 +157,19 @@ class UserController extends Controller
                 ]);
                 $dataDetail['user_id'] = $user->user_id;
                 $dataDetail['detail_supervisor_photo'] = $photoPath ?? null;
+
                 DetailSupervisor::create($dataDetail);
             }
 
             DB::commit();
 
-            return redirect()->route('admin.users.index', ['role' => $roleName])
-                ->with('success', $roleName == 'student' ? 'Student berhasil dibuat' : 'Supervisor berhasil dibuat');
+            return redirect()->route('admin.users.index', ['role' => $role])
+                ->with('success', ucfirst($role) . ' berhasil dibuat');
         } catch (\Exception $e) {
             DB::rollBack();
             return back()->withErrors(['error' => 'Gagal menyimpan data: ' . $e->getMessage()])->withInput();
         }
     }
-
-
 
     public function edit($roleName, $id)
     {
@@ -181,10 +187,8 @@ class UserController extends Controller
         }
     }
 
-
     public function update(Request $request, $roleName, $id)
     {
-
         // Ambil data user beserta detailnya
         $user = User::with(['detailStudent', 'detailSupervisor'])->findOrFail($id);
 
@@ -203,8 +207,6 @@ class UserController extends Controller
                 'regex:/[@$!%*#?&]/'
             ],
         ];
-
-
 
         // Validasi untuk Student
         if ($roleName == 'student') {
@@ -266,9 +268,6 @@ class UserController extends Controller
                     $detail->detail_student_photo = $filename;
                 }
 
-                // Debugging: Pastikan foto diterima
-                // dd($detail);
-
                 $detail->save();
             } else {  // Supervisor
                 $detail = $user->detailSupervisor ?? new DetailSupervisor();  // Jika tidak ada detailSupervisor, buat instance baru
@@ -293,7 +292,6 @@ class UserController extends Controller
 
             DB::commit();
 
-            // Redirect setelah berhasil
             return redirect()->route($roleName == 'student' ? 'admin.students.index' : 'admin.supervisors.index')
                 ->with('success', $roleName == 'student' ? 'Student berhasil diperbarui' : 'Supervisor berhasil diperbarui');
         } catch (\Exception $e) {
@@ -305,9 +303,30 @@ class UserController extends Controller
     public function destroy($roleName, $id)
     {
         $user = User::findOrFail($id);
-        $user->delete();
 
-        return redirect()->route($roleName == 'student' ? 'admin.users.index' : 'admin.users.index')
-            ->with('success', $roleName == 'student' ? 'Student berhasil dihapus' : 'Supervisor berhasil dihapus');
+        DB::beginTransaction();
+
+        try {
+            if ($roleName == 'student') {
+                if ($user->detailStudent) {
+                    $user->detailStudent->delete();
+                }
+            } else if ($roleName == 'supervisor') {
+                if ($user->detailSupervisor) {
+                    $user->detailSupervisor->delete();
+                }
+            }
+
+            $user->delete();
+
+            DB::commit();
+
+            return redirect()->route('admin.users.index', ['role' => $roleName])
+                ->with('success', $roleName == 'student' ? 'Student berhasil dihapus' : 'Supervisor berhasil dihapus');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->withErrors(['error' => 'Gagal menghapus data: ' . $e->getMessage()])->withInput();
+        }
     }
 }
+

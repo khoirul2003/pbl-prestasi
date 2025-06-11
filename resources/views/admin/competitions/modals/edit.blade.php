@@ -83,10 +83,10 @@
                         value="{{ $competition->competition_registration_link }}" required>
                 </div>
 
-                
+
                 <div class="mb-3">
                     <label class="form-label">Upload Document</label>
-                    <input type="file" name="competition_document" class="form-control">
+                    <input type="file" name="competition_document" class="form-control" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
                     @if ($competition->competition_document)
                         <small class="text-muted">Current: {{ basename($competition->competition_document) }}</small>
                     @endif
