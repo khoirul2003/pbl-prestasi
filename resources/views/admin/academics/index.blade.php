@@ -98,7 +98,63 @@
                                 </div>
 
                                 {{-- Modal Edit Academic Year --}}
-                                <div class="modal fade" id="editAcademicYearModal{{ $year->academic_year_id }}"
+                                <div class="modal fade" id="editAcademicYearModal{{ $year->academic_year_id }}" tabindex="-1" aria-labelledby="editAcademicYearLabel{{ $year->academic_year_id }}" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                    <form action="{{ route('admin.academic_years.update', $year->academic_year_id) }}" method="POST">
+                                        @csrf
+                                        @method('PUT')
+                                        <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="editAcademicYearLabel{{ $year->academic_year_id }}">Edit Academic Year</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="mb-3">
+                                            <label for="academic_year_{{ $year->academic_year_id }}" class="form-label">Academic Year</label>
+                                            <input type="text"
+                                                    class="form-control @error('academic_year') is-invalid @enderror"
+                                                    id="academic_year_{{ $year->academic_year_id }}"
+                                                    name="academic_year"
+                                                    value="{{ old('academic_year', $year->academic_year) }}"
+                                                    required>
+                                            @error('academic_year')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                            </div>
+                                            <div class="mb-3">
+                                            <label for="start_date_{{ $year->academic_year_id }}" class="form-label">Start Date</label>
+                                            <input type="date"
+                                                    class="form-control @error('start_date') is-invalid @enderror"
+                                                    id="start_date_{{ $year->academic_year_id }}"
+                                                    name="start_date"
+                                                    value="{{ old('start_date', \Carbon\Carbon::parse($year->start_date)->format('Y-m-d')) }}"
+                                                    required>
+                                            @error('start_date')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                            </div>
+                                            <div class="mb-3">
+                                            <label for="end_date_{{ $year->academic_year_id }}" class="form-label">End Date</label>
+                                            <input type="date"
+                                                    class="form-control @error('end_date') is-invalid @enderror"
+                                                    id="end_date_{{ $year->academic_year_id }}"
+                                                    name="end_date"
+                                                    value="{{ old('end_date', \Carbon\Carbon::parse($year->end_date)->format('Y-m-d')) }}"
+                                                    required>
+                                            @error('end_date')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                            <button type="submit" class="btn btn-warning">Update</button>
+                                        </div>
+                                        </div>
+                                    </form>
+                                    </div>
+                                </div>
+                                {{-- <div class="modal fade" id="editAcademicYearModal{{ $year->academic_year_id }}"
                                     tabindex="-1">
                                     <div class="modal-dialog modal-dialog-centered">
                                         <form action="{{ route('admin.academic_years.update', $year->academic_year_id) }}"
@@ -132,10 +188,29 @@
                                             </div>
                                         </form>
                                     </div>
-                                </div>
+                                </div> --}}
 
                                 {{-- Modal Delete Academic Year --}}
-                                <div class="modal fade" id="deleteAcademicYearModal{{ $year->academic_year_id }}"
+                                <div class="modal fade" id="deleteAcademicYearModal{{ $year->academic_year_id }}" tabindex="-1" aria-labelledby="deleteAcademicYearLabel{{ $year->academic_year_id }}" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <form action="{{ route('admin.academic_years.destroy', $year->academic_year_id) }}" method="POST">
+                                            @csrf
+                                            @method('DELETE')
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="deleteAcademicYearLabel{{ $year->academic_year_id }}">Confirm Delete</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">Are you sure you want to delete "<strong>{{ $year->academic_year }}</strong>"?</div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                    <button type="submit" class="btn btn-danger">Yes, Delete</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                                {{-- <div class="modal fade" id="deleteAcademicYearModal{{ $year->academic_year_id }}"
                                     tabindex="-1">
                                     <div class="modal-dialog modal-dialog-centered">
                                         <form action="{{ route('admin.academic_years.destroy', $year->academic_year_id) }}"
@@ -155,7 +230,7 @@
                                             </div>
                                         </form>
                                     </div>
-                                </div>
+                                </div> --}}
                             @endforeach
                         </tbody>
                     </table>
@@ -293,7 +368,27 @@
                                 <th>Action</th>
                             </tr>
                         </thead>
-                        <tbody>
+                                <tbody>
+          @foreach($periods as $index => $period)
+            <tr>
+              <td>{{ $index + 1 + ($periods->currentPage()-1)*$periods->perPage() }}</td>
+              <td>{{ $period->period_name }}</td>
+              <td>{{ $period->academic_year->academic_year }}</td>
+              <td>{{ \Carbon\Carbon::parse($period->start_date)->format('Y-m-d') }}</td>
+              <td>{{ \Carbon\Carbon::parse($period->end_date)->format('Y-m-d') }}</td>
+              <td>
+                <button class="btn btn-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#showPeriodModal{{ $period->period_id }}">
+                  <i class="bi bi-eye"></i>
+                </button>
+                <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editPeriodModal{{ $period->period_id }}">
+                  <i class="bi bi-pencil-square"></i>
+                </button>
+                <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deletePeriodModal{{ $period->period_id }}">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </td>
+            </tr>
+                        {{-- <tbody>
                             @foreach ($periods as $index => $period)
                                 <tr>
                                     <td>{{ $index + 1 }}</td>
@@ -313,10 +408,29 @@
                                             <i class="bi bi-trash"></i>
                                         </button>
                                     </td>
-                                </tr>
+                                </tr> --}}
 
                                 <!-- Modal Show -->
-                                <div class="modal fade" id="showPeriodModal{{ $period->period_id }}" tabindex="-1">
+                                            <div class="modal fade" id="showPeriodModal{{ $period->period_id }}" tabindex="-1" aria-labelledby="showPeriodLabel{{ $period->period_id }}" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="showPeriodLabel{{ $period->period_id }}">Period Detail</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                  </div>
+                  <div class="modal-body">
+                    <p><strong>Period:</strong> {{ $period->period_name }}</p>
+                    <p><strong>Academic Year:</strong> {{ $period->academic_year->academic_year }}</p>
+                    <p><strong>Start Date:</strong> {{ \Carbon\Carbon::parse($period->start_date)->format('Y-m-d') }}</p>
+                    <p><strong>End Date:</strong> {{ \Carbon\Carbon::parse($period->end_date)->format('Y-m-d') }}</p>
+                  </div>
+                  <div class="modal-footer">
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+                                {{-- <div class="modal fade" id="showPeriodModal{{ $period->period_id }}" tabindex="-1">
                                     <div class="modal-dialog modal-dialog-centered">
                                         <div class="modal-content">
                                             <div class="modal-header">
@@ -334,12 +448,46 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                </div> --}}
+
+
 
                                 <!-- Modal Edit -->
-                                <div class="modal fade" id="editPeriodModal{{ $period->period_id }}" tabindex="-1">
+                                            <div class="modal fade" id="editPeriodModal{{ $period->period_id }}" tabindex="-1" aria-labelledby="editPeriodLabel{{ $period->period_id }}" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered">
+                <form action="{{ route('admin.periods.update', $period->period_id) }}" method="POST" class="modal-content">
+                  @csrf @method('PUT')
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="editPeriodLabel{{ $period->period_id }}">Edit Period</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                  </div>
+                  <div class="modal-body">
+                    {{-- Period Name --}}
+                    <div class="mb-3">
+                      <label class="form-label">Period Name</label>
+                      <input type="text" name="period_name" class="form-control" value="{{ old('period_name', $period->period_name) }}" required>
+                    </div>
+                    {{-- Start Date --}}
+                    <div class="mb-3">
+                      <label class="form-label">Start Date</label>
+                      <input type="date" name="start_date" class="form-control" value="{{ old('start_date', \Carbon\Carbon::parse($period->start_date)->format('Y-m-d')) }}" required>
+                    </div>
+                    {{-- End Date --}}
+                    <div class="mb-3">
+                      <label class="form-label">End Date</label>
+                      <input type="date" name="end_date" class="form-control" value="{{ old('end_date', \Carbon\Carbon::parse($period->end_date)->format('Y-m-d')) }}" required>
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-warning">Update</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+                                {{-- <div class="modal fade" id="editPeriodModal{{ $period->period_id }}" tabindex="-1">
                                     <div class="modal-dialog modal-dialog-centered">
-                                        <form action="{{ route('admin.periods.update', $period->period_id) }}" method="POST" class="modal-content">
+                                        <form action="{{ route('admin.admin.', $period->period_id) }}" method="POST" class="modal-content">
 
                                             @csrf
                                             @method('PUT')
@@ -367,7 +515,7 @@
                                             </div>
                                         </form>
                                     </div>
-                                </div>
+                                </div> --}}
 
                                 <!-- Modal Delete -->
                                 <div class="modal fade" id="deletePeriodModal{{ $period->period_id }}" tabindex="-1">
@@ -400,7 +548,7 @@
             @endif
 
 
-
+            
             {{-- Modal Add Academic Year --}}
             <div class="modal fade" id="addAcademicYearModal" tabindex="-1">
                 <div class="modal-dialog modal-dialog-centered">
@@ -431,6 +579,8 @@
                     </form>
                 </div>
             </div>
+
+            
         </div>
     </div>
 @endsection

@@ -153,16 +153,15 @@ class AcademicController extends Controller
         return redirect()->route('student_periods.index')->with('success', 'Student period berhasil dihapus');
     }
 
-
     public function indexPeriod(Request $request)
     {
         $periods = Period::with('academic_year')
-            ->when($request->search, function ($query) use ($request) {
-                $query->where('period_name', 'like', '%' . $request->search . '%')
-                    ->orWhereHas('academic_year', function ($query) use ($request) {
-                        $query->where('academic_year', 'like', '%' . $request->search . '%');
-                    });
-            })
+            ->when($request->search, fn($q) => $q
+               ->where('period_name','like',"%{$request->search}%")
+               ->orWhereHas('academic_year', fn($q2) => 
+                  $q2->where('academic_year','like',"%{$request->search}%")
+               )
+            )
             ->paginate(10);
 
         return view('admin.periods.index', compact('periods'));
@@ -177,50 +176,119 @@ class AcademicController extends Controller
     public function storePeriod(Request $request)
     {
         $request->validate([
-            'academic_year_id' => 'required|exists:academic_years,id',
-            'period_name' => 'required|string|max:255',
-            'start_date' => 'required|date',
-            'end_date' => 'required|date|after:start_date',
+            'academic_year_id' => 'required|exists:academic_years,academic_year_id',
+            'period_name'      => 'required|string|max:255',
+            'start_date'       => 'required|date',
+            'end_date'         => 'required|date|after:start_date',
         ]);
 
-        Period::create([
-            'academic_year_id' => $request->academic_year_id,
-            'period_name' => $request->period_name,
-            'start_date' => $request->start_date,
-            'end_date' => $request->end_date,
-        ]);
+        Period::create($request->only([
+            'academic_year_id','period_name','start_date','end_date'
+        ]));
 
-        return redirect()->route('periods.index')->with('success', 'Period created successfully.');
+        return redirect()
+            ->route('admin.periods.index')
+            ->with('success','Period created successfully.');
     }
 
     public function editPeriod(Period $period)
     {
         $academicYears = AcademicYear::all();
-        return view('admin.periods.edit', compact('period', 'academicYears'));
+        return view('admin.periods.edit', compact('period','academicYears'));
     }
 
     public function updatePeriod(Request $request, Period $period)
     {
         $request->validate([
-            'academic_year_id' => 'required|exists:academic_years,id',
-            'period_name' => 'required|string|max:255',
-            'start_date' => 'required|date',
-            'end_date' => 'required|date|after:start_date',
+            'academic_year_id' => 'required|exists:academic_years,academic_year_id',
+            'period_name'      => 'required|string|max:255',
+            'start_date'       => 'required|date',
+            'end_date'         => 'required|date|after:start_date',
         ]);
 
-        $period->update([
-            'academic_year_id' => $request->academic_year_id,
-            'period_name' => $request->period_name,
-            'start_date' => $request->start_date,
-            'end_date' => $request->end_date,
-        ]);
+        $period->update($request->only([
+            'academic_year_id','period_name','start_date','end_date'
+        ]));
 
-        return redirect()->route('periods.index')->with('success', 'Period updated successfully.');
+        return redirect()
+            ->route('admin.periods.index')
+            ->with('success','Period updated successfully.');
     }
 
     public function destroyPeriod(Period $period)
     {
         $period->delete();
-        return redirect()->route('periods.index')->with('success', 'Period deleted successfully.');
+        return redirect()
+            ->route('admin.periods.index')
+            ->with('success','Period deleted successfully.');
     }
+    // public function indexPeriod(Request $request)
+    // {
+    //     $periods = Period::with('academic_year')
+    //         ->when($request->search, function ($query) use ($request) {
+    //             $query->where('period_name', 'like', '%' . $request->search . '%')
+    //                 ->orWhereHas('academic_year', function ($query) use ($request) {
+    //                     $query->where('academic_year', 'like', '%' . $request->search . '%');
+    //                 });
+    //         })
+    //         ->paginate(10);
+
+    //     return view('admin.periods.index', compact('periods'));
+    // }
+
+    // public function createPeriod()
+    // {
+    //     $academicYears = AcademicYear::all();
+    //     return view('admin.periods.create', compact('academicYears'));
+    // }
+
+    // public function storePeriod(Request $request)
+    // {
+    //     $request->validate([
+    //         'academic_year_id' => 'required|exists:academic_years,id',
+    //         'period_name' => 'required|string|max:255',
+    //         'start_date' => 'required|date',
+    //         'end_date' => 'required|date|after:start_date',
+    //     ]);
+
+    //     Period::create([
+    //         'academic_year_id' => $request->academic_year_id,
+    //         'period_name' => $request->period_name,
+    //         'start_date' => $request->start_date,
+    //         'end_date' => $request->end_date,
+    //     ]);
+
+    //     return redirect()->route('periods.index')->with('success', 'Period created successfully.');
+    // }
+
+    // public function editPeriod(Period $period)
+    // {
+    //     $academicYears = AcademicYear::all();
+    //     return view('admin.periods.edit', compact('period', 'academicYears'));
+    // }
+
+    // public function updatePeriod(Request $request, Period $period)
+    // {
+    //     $request->validate([
+    //         'academic_year_id' => 'required|exists:academic_years,id',
+    //         'period_name' => 'required|string|max:255',
+    //         'start_date' => 'required|date',
+    //         'end_date' => 'required|date|after:start_date',
+    //     ]);
+
+    //     $period->update([
+    //         'academic_year_id' => $request->academic_year_id,
+    //         'period_name' => $request->period_name,
+    //         'start_date' => $request->start_date,
+    //         'end_date' => $request->end_date,
+    //     ]);
+
+    //     return redirect()->route('periods.index')->with('success', 'Period updated successfully.');
+    // }
+
+    // public function destroyPeriod(Period $period)
+    // {
+    //     $period->delete();
+    //     return redirect()->route('periods.index')->with('success', 'Period deleted successfully.');
+    // }
 }
