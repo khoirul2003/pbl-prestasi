@@ -84,6 +84,15 @@ class CompetitionController extends Controller
         return redirect()->route('admin.competitions.index')->with('success', 'Competition updated successfully.');
     }
 
+    public function adminDestroy($id)
+    {
+        $competition = Competition::findOrFail($id);
+
+        $competition->delete();
+
+        return redirect()->route('admin.competitions.index')->with('success', 'Competition deleted successfully.');
+    }
+
 
     // ========================
     // REQUEST MANAGEMENT (ADMIN)
@@ -155,6 +164,7 @@ class CompetitionController extends Controller
 
     public function userStore(Request $request)
     {
+
         $validated = $this->validateCompetition($request);
         $documentPath = $this->handleFileUpload($request, 'competition_document');
 
