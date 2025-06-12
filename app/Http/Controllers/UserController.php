@@ -8,6 +8,7 @@ use App\Models\DetailSupervisor;
 use App\Models\StudyProgram;
 use App\Models\User;
 use App\Models\Role;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -115,6 +116,7 @@ class UserController extends Controller
                 'user_name' => $request->user_name,
                 'user_username' => $request->user_username,
                 'user_password' => Hash::make($request->user_password),
+                'email_verified_at' => Carbon::now()
             ]);
 
             // Handle photo upload for student or supervisor
@@ -122,12 +124,12 @@ class UserController extends Controller
                 $photo = $request->file('detail_student_photo');
                 $filename = time() . '_' . $photo->getClientOriginalName();
                 $photo->move(public_path('photos/students'), $filename);
-                $photoPath = 'photos/students/' . $filename;
+                $photoPath = $filename;
             } elseif ($role == 'supervisor' && $request->hasFile('detail_supervisor_photo')) {
                 $photo = $request->file('detail_supervisor_photo');
                 $filename = time() . '_' . $photo->getClientOriginalName();
                 $photo->move(public_path('photos/supervisors'), $filename);
-                $photoPath = 'photos/supervisors/' . $filename;
+                $photoPath = $filename;
             }
 
             // Save details based on the role

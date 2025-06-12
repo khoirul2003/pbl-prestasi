@@ -14,7 +14,7 @@
         <!-- Modal Add Academic Year -->
         <div class="modal fade" id="addAcademicYearModal" tabindex="-1" aria-labelledby="addAcademicYearLabel" aria-hidden="true">
             <div class="modal-dialog">
-                <form action="{{ route('academic_years.store') }}" method="POST">
+                <form action="{{ route('admin.academic_years.store') }}" method="POST">
                     @csrf
                     <div class="modal-content">
                         <div class="modal-header">
@@ -105,7 +105,7 @@
                     <!-- Modal Edit -->
                     <div class="modal fade" id="editAcademicYearModal{{ $academic_year->academic_year_id }}" tabindex="-1" aria-labelledby="editAcademicYearLabel{{ $academic_year->academic_year_id }}" aria-hidden="true">
                         <div class="modal-dialog">
-                            <form action="{{ route('academic_years.update', $academic_year->academic_year_id) }}" method="POST">
+                            <form action="{{ route('admin.academic_years.update', $academic_year->academic_year_id) }}" method="POST">
                                 @csrf
                                 @method('PUT')
                                 <div class="modal-content">
@@ -139,7 +139,7 @@
                     <!-- Modal Delete -->
                     <div class="modal fade" id="deleteAcademicYearModal{{ $academic_year->academic_year_id }}" tabindex="-1" aria-labelledby="deleteAcademicYearLabel{{ $academic_year->academic_year_id }}" aria-hidden="true">
                         <div class="modal-dialog">
-                            <form action="{{ route('academic_years.destroy', $academic_year->academic_year_id) }}" method="POST">
+                            <form action="{{ route('admin.academic_years.destroy', $academic_year->academic_year_id) }}" method="POST">
                                 @csrf
                                 @method('DELETE')
                                 <div class="modal-content">
