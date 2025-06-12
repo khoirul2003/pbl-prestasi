@@ -14,11 +14,11 @@ class RecommendationResult extends Model
     protected $primaryKey = 'recommendation_result_id';
 
     protected $fillable = [
-        'user_id', // ini untuk student, users berelasi ke detail_students nanti akan mengambil detail_student_id dan detail_student_name
+        'user_id',
         'competition_id',
-        'detail_supervisor_id', // ini untu supervisor
+        'detail_supervisor_id',
         'recommendation_result_score',
-        'detail_student_id', // ini untu supervisor
+        'detail_student_id',
     ];
 
     public function competition()

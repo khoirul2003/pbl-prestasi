@@ -54,6 +54,7 @@
                         <li><a href="#about" data-i18n="about">About</a></li>
                         <li><a href="#features" data-i18n="features">Features</a></li>
                         <li><a href="#how-it-works" data-i18n="how_it_works">How It Works</a></li>
+                        <li><a href="#team" >Team</a></li>
                         <li><a href="#contact" data-i18n="contact">Contact</a></li>
                     </ul>
                     <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
@@ -64,7 +65,8 @@
                     <button id="btn-en" class="btn btn-outline-primary btn-sm">EN</button>
                 </div>
                 <div>
-                    <a class="btn btn-outline-primary btn-sm" href="{{ route('register') }}" data-i18n="sign_in">SIGN UP</a>
+                    <a class="btn btn-outline-primary btn-sm" href="{{ route('register') }}" data-i18n="sign_in">SIGN
+                        UP</a>
                     <a class="btn btn-primary btn-sm" href="{{ route('login') }}" data-i18n="sign_in">SIGN IN</a>
                 </div>
             </div>
@@ -101,8 +103,7 @@
 
                         <div class="col-lg-6">
                             <div class="hero-image">
-                                <img src="landing_pages
-                    /assets/img/illustration/illustration-16.webp" alt="PRESen App"
+                                <img src="landing_pages/assets/img/illustration/illustration-16.webp" alt="PRESen App"
                                     class="img-fluid" loading="lazy" />
                             </div>
                         </div>
@@ -180,20 +181,17 @@
                         <div class="col-lg-6 about-images" data-aos="fade-up" data-aos-delay="200">
                             <div class="row gy-4">
                                 <div class="col-lg-6">
-                                    <img src="landing_pages
-                        /assets/img/about/about-portrait-1.webp" class="img-fluid"
+                                    <img src="landing_pages/assets/img/about/about-portrait-1.webp" class="img-fluid"
                                         alt="Tentang PRESen" />
                                 </div>
                                 <div class="col-lg-6">
                                     <div class="row gy-4">
                                         <div class="col-lg-12">
-                                            <img src="landing_pages
-                                /assets/img/about/about-8.webp" class="img-fluid"
+                                            <img src="landing_pages/assets/img/about/about-8.webp" class="img-fluid"
                                                 alt="Dashboard PRESen" />
                                         </div>
                                         <div class="col-lg-12">
-                                            <img src="landing_pages
-                                /assets/img/about/about-12.webp" class="img-fluid"
+                                            <img src="landing_pages/assets/img/about/about-12.webp" class="img-fluid"
                                                 alt="Fitur PRESen" />
                                         </div>
                                     </div>
@@ -349,6 +347,102 @@
                 </div>
             </section>
             <!-- /Features Section -->
+
+            <section id="team" class="team section light-background">
+
+                <!-- Section Title -->
+                <div class="container section-title" data-aos="fade-up">
+                    <h2 data-i18n="team_title">Our Team</h2>
+                    <p data-i18n="team_desc">Meet the brilliant minds behind PRESen</p>
+                </div><!-- End Section Title -->
+
+                <div class="container" data-aos="fade-up" data-aos-delay="100">
+
+                  <div class="row g-5">
+
+                    <div class="col-md-6 col-lg-3" data-aos="zoom-in" data-aos-delay="100">
+                      <div class="team-card">
+                        <div class="team-image">
+                          <img src="{{ asset('teams/charel.jpg') }}" class="img-fluid" alt="">
+                          <div class="team-overlay">
+
+                            <div class="team-social">
+                              <a href=""><i class="bi bi-twitter-x"></i></a>
+                              <a href=""><i class="bi bi-facebook"></i></a>
+                              <a href=""><i class="bi bi-instagram"></i></a>
+                              <a href=""><i class="bi bi-linkedin"></i></a>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="team-content">
+                          <h4>Charelino Kalingga</h4>
+
+                        </div>
+                      </div>
+                    </div><!-- End Team Member -->
+
+                    <div class="col-md-6 col-lg-3" data-aos="zoom-in" data-aos-delay="200">
+                      <div class="team-card">
+                        <div class="team-image">
+                          <img src="{{ asset('teams/ridho.jpg') }}" class="img-fluid" alt="">
+                          <div class="team-overlay">
+                            <div class="team-social">
+                              <a href=""><i class="bi bi-twitter-x"></i></a>
+                              <a href=""><i class="bi bi-facebook"></i></a>
+                              <a href=""><i class="bi bi-instagram"></i></a>
+                              <a href=""><i class="bi bi-linkedin"></i></a>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="team-content">
+                          <h4>Ridho Anfa'al</h4>
+                        </div>
+                      </div>
+                    </div><!-- End Team Member -->
+
+                    <div class="col-md-6 col-lg-3" data-aos="zoom-in" data-aos-delay="300">
+                      <div class="team-card">
+                        <div class="team-image">
+                          <img src="{{ asset('teams/khoirul.png') }}" class="img-fluid" alt="">
+                          <div class="team-overlay">
+                            <div class="team-social">
+                              <a href=""><i class="bi bi-twitter-x"></i></a>
+                              <a href=""><i class="bi bi-facebook"></i></a>
+                              <a href=""><i class="bi bi-instagram"></i></a>
+                              <a href=""><i class="bi bi-linkedin"></i></a>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="team-content">
+                          <h4>M. Khoirul Anwarudin</h4>
+                        </div>
+                      </div>
+                    </div><!-- End Team Member -->
+
+                    <div class="col-md-6 col-lg-3" data-aos="zoom-in" data-aos-delay="400">
+                      <div class="team-card">
+                        <div class="team-image">
+                          <img src="{{ asset('teams/image.png') }}" class="img-fluid" alt="">
+                          <div class="team-overlay">
+                            <div class="team-social">
+                              <a href=""><i class="bi bi-twitter-x"></i></a>
+                              <a href=""><i class="bi bi-facebook"></i></a>
+                              <a href=""><i class="bi bi-instagram"></i></a>
+                              <a href=""><i class="bi bi-linkedin"></i></a>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="team-content">
+                          <h4>M. Athokillah</h4>
+                        </div>
+                      </div>
+                    </div><!-- End Team Member -->
+
+                  </div>
+
+                </div>
+
+              </section><!-- /Team Section -->
 
             <!-- Contact Section -->
             <section id="contact" class="contact section">

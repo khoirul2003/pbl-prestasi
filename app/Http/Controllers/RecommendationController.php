@@ -12,6 +12,7 @@ use App\Models\User;
 use App\Models\Competition;
 use App\Models\DetailSupervisor;
 use App\Models\RecommendationResult;
+use App\Notifications\RecommendationNotification;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
@@ -260,7 +261,7 @@ class RecommendationController extends Controller
                 ? $matchingSupervisors->random()
                 : null;
 
-            RecommendationResult::updateOrCreate(
+            $recommendationResult = RecommendationResult::updateOrCreate(
                 [
                     'competition_id' => $competition->competition_id,
                     'user_id' => $student->user_id,
@@ -272,6 +273,8 @@ class RecommendationController extends Controller
                     'detail_supervisor_id' => $selectedSupervisor?->detail_supervisor_id,
                 ]
             );
+
+            $student->notify(new RecommendationNotification($recommendationResult));
         }
 
         $perPage = 10;

@@ -37,7 +37,7 @@ class UserSeeder extends Seeder
         $departmentIds = Department::pluck('department_id')->all();
 
         // Students
-        for ($i = 1; $i <= 45; $i++) {
+        for ($i = 1; $i <= 20; $i++) {
             $firstName = $namaDepan[array_rand($namaDepan)];
             $lastName = $namaBelakang[array_rand($namaBelakang)];
             $name = "$firstName $lastName";
@@ -48,7 +48,7 @@ class UserSeeder extends Seeder
                 'user_name' => $name,
                 'user_username' => $username,
                 'user_password' => Hash::make('Student123!'),
-             
+                'email_verified_at' => Carbon::now()
 
             ]);
 
