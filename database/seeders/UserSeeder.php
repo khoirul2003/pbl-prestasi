@@ -27,7 +27,7 @@ class UserSeeder extends Seeder
             'user_name' => 'Admin Utama',
             'user_username' => 'admin',
             'user_password' => Hash::make('Admin123!'),
-            'email_verified_at' => Carbon::now(),
+            // 'email_verified_at' => Carbon::now(),
         ]);
 
         $namaDepan = ['Andi', 'Budi', 'Citra', 'Dewi', 'Eka', 'Farhan', 'Gita', 'Hari', 'Indah', 'Joko', 'Kurniawan', 'Lestari', 'Maya', 'Nugroho', 'Oktaviani', 'Putri', 'Rizki', 'Sinta', 'Teguh', 'Umi', 'Vina', 'Wahyu', 'Yulia', 'Zahra', 'Fajar', 'Galih', 'Hanif', 'Intan', 'Jasmine', 'Kirana'];
@@ -48,7 +48,7 @@ class UserSeeder extends Seeder
                 'user_name' => $name,
                 'user_username' => $username,
                 'user_password' => Hash::make('Student123!'),
-                'email_verified_at' => Carbon::now(),
+                // 'email_verified_at' => Carbon::now(),
 
             ]);
 
@@ -76,7 +76,7 @@ class UserSeeder extends Seeder
                 'user_name' => $name,
                 'user_username' => $username,
                 'user_password' => Hash::make('Supervisor123!'),
-                'email_verified_at' => Carbon::now(),
+                // 'email_verified_at' => Carbon::now(),
 
             ]);
 
