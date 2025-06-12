@@ -3,7 +3,7 @@
         <div class="modal-dialog modal-xl">
             <form action="{{ route('admin.users.store', ['role' => $role]) }}" method="POST" enctype="multipart/form-data">
                 @csrf
-                
+
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="addUserLabel">Add {{ ucfirst(request('role') ?? 'student') }}</h5>
@@ -19,7 +19,12 @@
                                     <img id="photoPreview" src="#" alt="Photo Preview" class="img-fluid rounded" style="max-width: 100%; height: auto; display: none;">
                                 </div>
                                 <div class="text-center mt-2">
-                                    <input type="file" class="form-control" name="detail_student_photo" accept="image/*" onchange="previewPhoto(event)">
+                                    <!-- Input for photo with dynamic name based on role -->
+                                    @if(request('role') == 'supervisor')
+                                        <input type="file" class="form-control" name="detail_supervisor_photo" accept="image/*" onchange="previewPhoto(event)">
+                                    @else
+                                        <input type="file" class="form-control" name="detail_student_photo" accept="image/*" onchange="previewPhoto(event)">
+                                    @endif
                                 </div>
                             </div>
 
