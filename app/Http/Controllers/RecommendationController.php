@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Exports\MooraExport;
 use App\Exports\MooraSingleSheetExport;
+use App\Mail\RecommendationMail;
 use App\Models\Achievement;
 use App\Models\PreUniversityAchievement;
 use App\Models\StudentPeriod;
@@ -16,6 +17,8 @@ use App\Notifications\RecommendationNotification;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Maatwebsite\Excel\Facades\Excel;
 
 class RecommendationController extends Controller
@@ -274,7 +277,7 @@ class RecommendationController extends Controller
                 ]
             );
 
-            $student->notify(new RecommendationNotification($recommendationResult));
+            $this->sendEmailToStudent($recommendationResult);
         }
 
         $perPage = 10;
@@ -493,4 +496,24 @@ class RecommendationController extends Controller
             'moora_step_by_step.xlsx'
         );
     }
+
+    public function sendEmailToStudent($recommendationResult)
+    {
+        $student = $recommendationResult->user;
+        $competition = $recommendationResult->competition;
+
+        if ($student->detailStudent) {
+            Mail::send('emails.recommendation', [
+                'student' => $student,
+                'competition' => $competition,
+                'recommendationResult' => $recommendationResult,
+            ], function ($message) use ($student, $competition) {
+                $message->to($student->detailStudent->detail_student_email)
+                    ->subject('Rekomendasi untuk Kompetisi ' . $competition->competition_tittle);
+            });
+        } else {
+            Log::error('DetailStudent not found for user: ' . $student->user_name);
+        }
+    }
 }
+ 

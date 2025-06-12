@@ -58,7 +58,7 @@
 
         @if ($role == 2)
             <li class="nav-item">
-                <a class="nav-link fs-6" href="{{ route('student.dashboard') }}">
+                <a class="nav-link fs-6" href="{{ route('supervisor.dashboard') }}">
                     <i class="menu-icon mdi bi bi-speedometer2"></i>
                     <span class="menu-title">Dashboard</span>
                 </a>
@@ -124,17 +124,7 @@
         @endif
 
 
-        <li class="nav-item">
-            <a href="{{ route('logout') }}" class="nav-link fs-6" style="color: inherit; text-decoration: none;"
-                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                <i class="menu-icon mdi bi bi-box-arrow-right"></i>
-                <span class="menu-title">Logout</span>
-            </a>
 
-            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                @csrf
-            </form>
-        </li>
     </ul>
 </nav>
 

@@ -2,14 +2,51 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Competition;
 use App\Models\DetailSupervisor;
+use App\Models\RecommendationResult;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class SupervisorController extends Controller
 {
     public function index()
     {
-        return view('supervisor.dashboard');
+        $supervisor = DetailSupervisor::with('user')
+            ->where('user_id', auth()->id())
+            ->firstOrFail();
+
+        // Fetch top student rankings based on achievements
+        $studentRankings = User::join('achievements', 'users.user_id', '=', 'achievements.user_id')
+            ->select('users.user_name', DB::raw('COUNT(achievements.achievement_id) as achievement_count'))
+            ->groupBy('users.user_name')
+            ->orderByDesc('achievement_count')
+            ->limit(10)
+            ->get();
+
+        // Fetch competitions with open registration
+        $openCompetitions = Competition::where('competition_registration_deadline', '>', now())
+            ->orderBy('competition_registration_deadline', 'asc')
+            ->get();
+
+        // Count the number of students under this supervisor's mentorship using recommendation_results
+        $studentsUnderSupervisionCount = RecommendationResult::where('detail_supervisor_id', $supervisor->detail_supervisor_id)
+            ->distinct('user_id')  // Ensure we count each student only once
+            ->count('user_id');
+
+        // Count the number of competitions this supervisor is mentoring
+        $competitionsUnderMentorshipCount = RecommendationResult::where('detail_supervisor_id', $supervisor->detail_supervisor_id)
+            ->distinct('competition_id')  // Ensure we count each competition only once
+            ->count('competition_id');
+
+        return view('supervisor.dashboard', compact(
+            'supervisor',
+            'studentRankings',
+            'openCompetitions',
+            'studentsUnderSupervisionCount',
+            'competitionsUnderMentorshipCount'
+        ));
     }
 
     public function profile()
