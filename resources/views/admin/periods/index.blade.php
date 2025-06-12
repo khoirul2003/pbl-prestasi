@@ -225,6 +225,11 @@
                 @endforeach
             </tbody>
         </table>
+        
+        <div class="mt-3">
+            {{ $periods->links() }}
+        </div>
+
     </div>
 </div>
 </div>

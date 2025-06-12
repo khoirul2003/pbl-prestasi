@@ -21,23 +21,17 @@
                 </a>
             </li>
 
-            <li class="nav-item">
-                <a class="nav-link fs-6" href="{{ route('departments.index') }}"><i
+            <li class="nav-item"><a class="nav-link fs-6" href="{{ route('departments.index') }}"><i
                         class="menu-icon mdi bi bi-building"></i><span class="menu-title">Departments</span></a></li>
-
             <li class="nav-item"><a class="nav-link fs-6" href="{{ route('study_programs.index') }}"><i
                         class="menu-icon mdi bi bi-journal-bookmark"></i><span class="menu-title">Study
                         Programs</span></a></li>
-
             <li class="nav-item"><a class="nav-link fs-6" href="{{ route('admin.academics.index') }}"><i
                         class="menu-icon mdi bi-calendar3"></i><span class="menu-title">Academic</span></a></li>
-
-            <li class="nav-item"><a class="nav-link fs-6" href="{{ route('admin.academics.index') }}"><i
+            <li class="nav-item"><a class="nav-link fs-6" href="{{ route('admin.student_periods.index') }}"><i
                         class="menu-icon mdi bi-calendar3"></i><span class="menu-title">Student Period</span></a></li>
-
             <li class="nav-item"><a class="nav-link fs-6" href="{{ route('admin.periods.index') }}"><i
                         class="menu-icon mdi bi-calendar3"></i><span class="menu-title">Period</span></a></li>
-
             <li class="nav-item"><a class="nav-link fs-6" href="{{ route('skills.index') }}"><i
                         class="menu-icon mdi bi bi-tools"></i><span class="menu-title">Skills</span></a></li>
 
@@ -152,7 +146,6 @@
         font-size: 0.80rem !important;
         /* Make text smaller */
     }
-
 .sidebar .nav-link .menu-title {
   white-space: normal;
 }
