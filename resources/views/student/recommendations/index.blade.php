@@ -30,7 +30,8 @@
                         <h5 class="card-title">{{ $rec->competition->competition_tittle }}</h5>
                         <p class="card-text">
                             <strong>Deadline:</strong> {{ \Carbon\Carbon::parse($rec->competition->competition_registration_deadline)->format('F d, Y') }}<br>
-                            <strong>Recommendation Score:</strong> {{ number_format($rec->recommendation_result_score, 2) }}
+                            <strong>Recommendation Score:</strong> {{ number_format($rec->recommendation_result_score, 2) }}<br>
+                            <strong>Supervisor:</strong> {{ $rec->supervisor->user->user_name }}
                         </p>
                         <p class="card-text">
                             {{ $rec->competition->competition_description }}

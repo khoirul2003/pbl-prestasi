@@ -12,7 +12,7 @@ class StudentRecommendationController extends Controller
     {
         $userId = Auth::id();
 
-        $recommendations = RecommendationResult::with('competition')
+        $recommendations = RecommendationResult::with('competition', 'supervisor')
             ->where('user_id', $userId)
             ->orderByDesc('recommendation_result_score')
             ->get();
