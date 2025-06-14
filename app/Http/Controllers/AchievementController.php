@@ -64,4 +64,12 @@ class AchievementController extends Controller
         return redirect()->route('achievements.index', ['status' => 'pending'])
             ->with('success', 'Achievement rejected successfully.');
     }
+
+    public function achievementReport()
+    {
+        $achievements = Achievement::with(['user', 'category'])
+            ->orderBy('created_at', 'desc')
+            ->paginate(10); 
+        return view('admin.reports.achievement', compact('achievements'));
+    }
 }

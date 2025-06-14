@@ -43,7 +43,7 @@
 
         a {
             color: #121212;
-            background-color: #4A90E2; /* Light blue background for the button */
+            background-color: #4A90E2;
             padding: 12px 25px;
             text-decoration: none;
             border-radius: 5px;
@@ -54,23 +54,23 @@
         }
 
         a:hover {
-            background-color: #357ABD; /* Darker blue when hovered */
+            background-color: #357ABD;
         }
 
         .footer {
             font-size: 14px;
             text-align: center;
-            color: #888; /* Gray color for the footer text */
+            color: #888;
             margin-top: 30px;
         }
 
         .footer a {
-            color: #4A90E2; /* Light blue color for the footer links */
+            color: #4A90E2;
             text-decoration: none;
         }
 
         .footer a:hover {
-            color: #357ABD; /* Darker blue for hover effect on footer link */
+            color: #357ABD;
         }
     </style>
 </head>
