@@ -53,7 +53,6 @@
                         class="menu-icon bi bi-award"></i><span class="menu-title">Pre University
                         Achievements</span></a></li>
 
-
         @endif
 
         @if ($role == 2)

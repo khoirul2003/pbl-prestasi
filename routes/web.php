@@ -121,6 +121,8 @@ Route::middleware('auth')->prefix('admin')->group(function () {
     Route::post('achievements/{id}/approve', [AchievementController::class, 'approve'])->name('achievements.approve');
     Route::post('achievements/{id}/reject', [AchievementController::class, 'reject'])->name('achievements.reject');
 
+    Route::post('report', [AchievementController::class, 'achievementReport'])->name('report.achievement.index');
+
     Route::resource('pre_university_achievements', PreUniversityAchievementController::class)
         ->only(['index', 'show']);
 

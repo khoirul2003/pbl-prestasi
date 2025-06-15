@@ -12,7 +12,7 @@ class Achievement extends Model
     protected $table = 'achievements';
 
     protected $fillable = [
-        'user_id',
+        'user_id', // users yang berelasi ke detail_students
         'category_id',
         'achievement_title',
         'achievement_description',

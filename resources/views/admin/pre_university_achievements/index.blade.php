@@ -110,7 +110,6 @@
             </table>
         </div>
 
-        {{-- Pagination --}}
         <div class="mt-3">
             {{ $preUniversityAchievements->links() }}
         </div>

@@ -65,7 +65,7 @@
                     <button id="btn-en" class="btn btn-outline-primary btn-sm">EN</button>
                 </div>
                 <div>
-                    <a class="btn btn-outline-primary btn-sm" href="{{ route('register') }}" data-i18n="sign_in">SIGN
+                    <a class="btn btn-outline-primary btn-sm" href="{{ route('register') }}" data-i18n="sign_up">SIGN
                         UP</a>
                     <a class="btn btn-primary btn-sm" href="{{ route('login') }}" data-i18n="sign_in">SIGN IN</a>
                 </div>
@@ -662,6 +662,7 @@
                     how_it_works: "How It Works",
                     contact: "Contact",
                     sign_in: "SIGN IN",
+                    sign_up: "SIGN UP",
                     badge: "Innovative Student Support",
                     hero_title: "Manage Achievements & Seize Competition Opportunities with PRESen",
                     hero_description: "PRESen is a web platform to digitally record student achievements and provide competition recommendations based on your skills and interests.",
