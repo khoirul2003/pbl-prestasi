@@ -9,13 +9,11 @@
             <div class="row g-0">
                 {{-- Left side: Competition document preview --}}
                 <div class="col-md-4">
-                    @if ($rec->competition->competition_document)
-                        <iframe
-                            src="{{ asset($rec->competition->competition_document) }}"
-                            class="w-100 h-100"
-                            style="min-height: 250px;"
-                            frameborder="0">
-                        </iframe>
+                    @if (!empty($rec->competition->competition_document))
+                        <img src="{{ asset($rec->competition->competition_document) }}"
+                             alt="Competition Document"
+                             class="img-fluid h-100 object-fit-cover"
+                             style="min-height: 250px; max-height: 250px; width: 100%; object-fit: cover;">
                     @else
                         <div class="d-flex align-items-center justify-content-center h-100 text-muted bg-light"
                              style="min-height: 250px;">
@@ -24,20 +22,27 @@
                     @endif
                 </div>
 
+
                 {{-- Right side: Competition details --}}
                 <div class="col-md-8">
                     <div class="card-body">
-                        <h5 class="card-title">{{ $rec->competition->competition_tittle }}</h5>
+                        <h5 class="card-title">{{ $rec->competition->competition_tittle ?? 'Untitled Competition' }}</h5>
                         <p class="card-text">
-                            <strong>Deadline:</strong> {{ \Carbon\Carbon::parse($rec->competition->competition_registration_deadline)->format('F d, Y') }}<br>
-                            <strong>Recommendation Score:</strong> {{ number_format($rec->recommendation_result_score, 2) }}<br>
-                            <strong>Supervisor:</strong> {{ $rec->supervisor->user->user_name }}
+                            <strong>Deadline:</strong>
+                            {{ \Carbon\Carbon::parse($rec->competition->competition_registration_deadline)->format('F d, Y') }}<br>
+
+                            <strong>Recommendation Score:</strong>
+                            {{ number_format($rec->recommendation_result_score, 2) }}<br>
+
+                            <strong>Supervisor:</strong>
+                            {{ $rec->supervisor && $rec->supervisor->user ? $rec->supervisor->user->user_name : 'Not Assigned' }}
                         </p>
+
                         <p class="card-text">
                             {{ $rec->competition->competition_description }}
                         </p>
 
-                        @if ($rec->competition->competition_registration_link)
+                        @if (!empty($rec->competition->competition_registration_link))
                             <a href="{{ $rec->competition->competition_registration_link }}" target="_blank" class="btn btn-outline-primary">
                                 Visit Competition Link
                             </a>

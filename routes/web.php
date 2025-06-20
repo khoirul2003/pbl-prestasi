@@ -130,13 +130,14 @@ Route::middleware('auth')->prefix('admin')->group(function () {
     Route::get('recommendations', [RecommendationController::class, 'index'])->name('admin.recommendations.index');
     Route::get('recommendations/{competition}', [RecommendationController::class, 'showRecommendations'])->name('admin.recommendations.show');
     Route::get('recommendations/{competition}/export', [RecommendationController::class, 'exportToExcel'])->name('admin.recommendations.export');
+    Route::get('/recommendations/{competitionId}/export-pdf', [RecommendationController::class, 'exportPdf'])->name('admin.recommendations.exportPdf');
 });
 
 Route::middleware('auth')->prefix('student')->group(function () {
     Route::get('/', [StudentController::class, 'index'])->name('student.dashboard');
     Route::get('/profile', [StudentController::class, 'profile'])->name('student.profile');
     Route::post('/profile/update', [StudentController::class, 'updateProfile'])->name('student.profile.update');
-    Route::get('/recommendations', [StudentRecommendationController::class, 'index'])->name('student.recommendations.index');
+    Route::get('/recommendations', [RecommendationController::class, 'showStudentRecommendations'])->name('student.recommendations.index');
 
     // Student Achievements
     Route::get('achievements/', [StudentAchievementController::class, 'index'])->name('student.achievements.index');

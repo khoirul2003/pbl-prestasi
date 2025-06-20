@@ -10,9 +10,6 @@ use Illuminate\Support\Facades\Auth;
 
 class CompetitionController extends Controller
 {
-    // ========================
-    // ADMIN METHODS
-    // ========================
 
     public function adminIndex(Request $request)
     {
