@@ -31,21 +31,20 @@ use Illuminate\Support\Facades\Route;
 Route::view('/', 'home')->name('home');
 Route::view('/test', 'test')->name('test');
 
-Route::get('/send-test-email', function () {
-    Mail::raw('Test email body', function ($message) {
-        $message->to('dimaskechiel58@gmail.com')
-            ->subject('Test Email');
-    });
+// Route::get('/send-test-email', function () {
+//     Mail::raw('Test email body', function ($message) {
+//         $message->to('dimaskechiel58@gmail.com')
+//             ->subject('Test Email');
+//     });
 
-    return 'Test email sent!';
-});
+//     return 'Test email sent!';
+// });
 
 Route::get('login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('login', [AuthController::class, 'login'])->name('login.post');
 
 Route::get('register', [AuthController::class, 'showRegisterForm'])->name('register');
 Route::post('register', [AuthController::class, 'register'])->name('register.post');
-Route::get('/email/verify/{user}', [AuthController::class, 'verifyEmail'])->name('verification.verify');
 
 Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 
@@ -53,7 +52,6 @@ Route::get('password/forgot', [AuthController::class, 'showForgotPasswordForm'])
 Route::post('password/email', [AuthController::class, 'sendResetLinkEmail'])->name('password.email');
 Route::get('password/reset/{token}/{email}', [AuthController::class, 'showResetPasswordForm'])->name('password.reset');
 Route::post('password/reset', [AuthController::class, 'resetPassword'])->name('password.update');
-
 
 
 Route::middleware('auth')->prefix('admin')->group(function () {

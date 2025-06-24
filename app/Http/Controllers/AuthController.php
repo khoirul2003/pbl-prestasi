@@ -31,47 +31,40 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        $request->validate([
-            'login_id' => 'required|string',
-            'password' => 'required|string',
-        ]);
-
-        $loginId = $request->login_id;
-        $password = $request->password;
-
-        $user = User::where('user_username', $loginId)->first();
-
-        if (!$user) {
-            $detailSupervisor = DetailSupervisor::where('detail_supervisor_nip', $loginId)->first();
-            $user = $detailSupervisor ? $detailSupervisor->user : null;
-        }
-
-        if (!$user) {
-            $detailStudent = DetailStudent::where('detail_student_nim', $loginId)->first();
-            $user = $detailStudent ? $detailStudent->user : null;
-        }
-
-        if (!$user || !Hash::check($password, $user->user_password)) {
-            throw ValidationException::withMessages([
-                'login_id' => ['Login credentials are incorrect.'],
+            $request->validate([
+                'login_id' => 'required|string',
+                'password' => 'required|string',
             ]);
-        }
 
-        // Cek apakah email sudah terverifikasi
-        if (is_null($user->email_verified_at)) {
-            throw ValidationException::withMessages([
-                'login_id' => ['Your email has not been verified. Please check your email for verification.'],
-            ]);
-        }
+            $loginId = $request->login_id;
+            $password = $request->password;
 
-        Auth::login($user);
+            $user = User::where('user_username', $loginId)->first();
 
-        return match ($user->role->role_name) {
-            'admin' => redirect()->route('admin.dashboard'),
-            'supervisor' => redirect()->route('supervisor.dashboard'),
-            'student' => redirect()->route('student.dashboard'),
-            default => abort(403),
-        };
+            if (!$user) {
+                $detailSupervisor = DetailSupervisor::where('detail_supervisor_nip', $loginId)->first();
+                $user = $detailSupervisor ? $detailSupervisor->user : null;
+            }
+
+            if (!$user) {
+                $detailStudent = DetailStudent::where('detail_student_nim', $loginId)->first();
+                $user = $detailStudent ? $detailStudent->user : null;
+            }
+
+            if (!$user || !Hash::check($password, $user->user_password)) {
+                throw ValidationException::withMessages([
+                    'login_id' => ['Login credentials are incorrect.'],
+                ]);
+            }
+
+            Auth::login($user);
+
+            return match ($user->role->role_name) {
+                'admin' => redirect()->route('admin.dashboard'),
+                'supervisor' => redirect()->route('supervisor.dashboard'),
+                'student' => redirect()->route('student.dashboard'),
+                default => abort(403),
+            };
     }
 
 
@@ -97,13 +90,12 @@ class AuthController extends Controller
             'detail_student_email' => 'required|email',
         ]);
 
-        // dd($request->all());
-
         $user = User::create([
-            'role_id' => 3,
+            'role_id' => 3, // student
             'user_name' => $request->user_name,
             'user_username' => $request->user_username,
             'user_password' => Hash::make($request->user_password),
+            
         ]);
 
         DetailStudent::create([
@@ -118,15 +110,7 @@ class AuthController extends Controller
             'detail_student_photo' => null,
         ]);
 
-        $verificationUrl = URL::temporarySignedRoute(
-            'verification.verify',
-            now()->addMinutes(60),
-            ['user' => $user->user_id]
-        );
-
-        Mail::to($user->detailStudent->detail_student_email)->send(new VerifyEmail($user, $verificationUrl));
-
-        return redirect()->route('login')->with('success', 'Registration successful. Please check your email for verification.');
+        return redirect()->route('login')->with('success', 'Registration successful. You can now login.');
     }
 
 
