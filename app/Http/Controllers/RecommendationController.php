@@ -113,13 +113,15 @@ class RecommendationController extends Controller
     {
         $competition = Competition::findOrFail($competitionId);
         $resultsData = $this->calculateMoora($competition);
+        $weights = $this->getMooraWeights();
 
         return Excel::download(
             new MooraExport(
                 $competition,
                 $resultsData['decisionMatrix'],
                 $resultsData['normalizedMatrix'],
-                $resultsData['results']
+                $resultsData['results'],
+                $weights
             ),
             'moora_step_by_step.xlsx'
         );

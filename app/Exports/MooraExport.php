@@ -18,13 +18,16 @@ class MooraExport implements FromView, ShouldAutoSize
     protected $decisionMatrix;
     protected $normalizedMatrix;
     protected $results;
+    protected $weights;
 
-    public function __construct($competition, $decisionMatrix, $normalizedMatrix, $results)
+    public function __construct($competition, $decisionMatrix, $normalizedMatrix, $results, $weights = [])
     {
         $this->competition = $competition;
         $this->decisionMatrix = $decisionMatrix;
         $this->normalizedMatrix = $normalizedMatrix;
         $this->results = $results;
+        $this->weights = $weights;
+
     }
 
     public function view(): View
@@ -34,6 +37,7 @@ class MooraExport implements FromView, ShouldAutoSize
             'decisionMatrix' => $this->decisionMatrix,
             'normalizedMatrix' => $this->normalizedMatrix,
             'results' => $this->results,
+            'weights' => $this->weights,
         ]);
     }
 
